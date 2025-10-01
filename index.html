@@ -44,13 +44,13 @@
             gap: var(--space-md);
         }
         .header .logo-container {
-            height: 50px; /* Altura del logo */
+            height: 50px;
             flex-shrink: 0;
         }
         .header .logo-container img {
             height: 100%;
-            width: auto; /* Ancho automático para mantener proporción */
-            object-fit: contain; /* Asegura que la imagen completa se vea */
+            width: auto;
+            object-fit: contain;
         }
         .header .title-group { display: flex; flex-direction: column; }
         .header .logo-title {
@@ -238,6 +238,13 @@
                 <div class="filters-panel">
                     <h2><i class="fas fa-filter"></i> Filtros</h2>
                     <div class="filter-group">
+                        <label for="country-filter">País</label>
+                        <div class="input-wrapper">
+                            <select id="country-filter"><option value="">Cargando países...</option></select>
+                            <i class="fas fa-flag icon"></i>
+                        </div>
+                    </div>
+                    <div class="filter-group">
                         <label for="search">Buscar por nombre</label>
                         <div class="input-wrapper">
                             <input type="text" id="search" placeholder="Ej: Pascua Lama...">
@@ -247,14 +254,14 @@
                     <div class="filter-group">
                         <label for="region-filter">Región</label>
                         <div class="input-wrapper">
-                            <select id="region-filter"><option value="">Cargando regiones...</option></select>
+                            <select id="region-filter"><option value="">Seleccione un país</option></select>
                             <i class="fas fa-map-marked-alt icon"></i>
                         </div>
                     </div>
                     <div class="filter-group">
                         <label for="type-filter">Sector</label>
                         <div class="input-wrapper">
-                           <select id="type-filter"><option value="">Cargando sectores...</option></select>
+                           <select id="type-filter"><option value="">Seleccione un país</option></select>
                            <i class="fas fa-industry icon"></i>
                         </div>
                     </div>
@@ -310,6 +317,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- DEFINICIONES Y CONSTANTES ---
+            const QID_CHILE = "Q298";
             const sectorKeywords = { 'Minero': ["minero", "minera", "mina", "pascua lama", "casale", "collahuasi", "codelco", "cobre", "litio"], 'Agua': ["agua", "hídrico", "represa", "río", "lago", "hidroeléctrica", "hidroaysén", "escasez", "glaciar", "sequía", "embalse", "mar", "océano", "costa", "puerto"], 'Forestal': ["forestal", "celulosa", "arauco", "cmpc", "bosque", "árbol", "plantación"], 'Industrial': ["industrial", "contaminación", "quintero", "refinería", "plomo", "pesquero", "salmonera", "derrame", "empresa"], 'Energético': ["energético", "termoeléctrica", "central", "carbón", "eólico", "eléctrica", "solar", "gas", "petróleo"], 'Protesta Social': ["protesta", "social", "estallido", "huelga", "disputa", "movilización", "comunidad", "vecinos", "mapuche"] };
             const sectorColors = { 'Minero': "#ff9800", 'Agua': "#2196f3", 'Forestal': "#4caf50", 'Industrial': "#f44336", 'Energético': "#9c27b0", 'Protesta Social': "#e91e63", 'Otro': "#607d8b" };
             const sectorIcons = { 'Minero': "fas fa-mountain", 'Agua': "fas fa-water", 'Forestal': "fas fa-tree", 'Industrial': "fas fa-industry", 'Energético': "fas fa-bolt", 'Protesta Social': "fas fa-users", 'Otro': "fas fa-question-circle" };
@@ -325,11 +333,34 @@
             const detailsPanel = document.getElementById("details-panel");
             const statsPanelWrapper = document.getElementById("stats-panel-wrapper");
             const statsPanelContent = document.getElementById("stats-panel-content");
+            const countryFilter = document.getElementById('country-filter');
+            const otherFilters = ['search', 'region-filter', 'type-filter', 'status-filter', 'date-filter'];
 
-            // --- LÓGICA PRINCIPAL (OBTENCIÓN DE DATOS) ---
-            async function fetchWikidata() {
+            // --- LÓGICA PRINCIPAL ---
+
+            async function initializeApp() {
+                await fetchCountries();
+                countryFilter.value = QID_CHILE;
+                await fetchData(QID_CHILE);
+            }
+
+            async function fetchCountries() {
+                const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } } ORDER BY ?countryLabel`;
+                const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
+                try {
+                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    const data = await response.json();
+                    const countries = data.results.bindings.map(b => ({ id: b.country.value.split('/').pop(), name: b.countryLabel.value }));
+                    populateCountryFilter(countries);
+                } catch (error) {
+                    console.error("Error fetching countries:", error);
+                    countryFilter.innerHTML = '<option value="">Error al cargar</option>';
+                }
+            }
+
+            async function fetchData(countryQID) {
                 showLoading(true);
-                const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?regionLabel ?wikipediaUrl WHERE { { ?conflict wdt:P17 wd:Q298. } UNION { ?conflict wdt:P131+ ?loc . ?loc wdt:P17 wd:Q298. } VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131* ?regionInstance . ?regionInstance wdt:P31/wdt:P279* wd:Q10864048. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?regionInstance rdfs:label ?regionLabel. } } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "es"; schema:isPartOf <https://es.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?conflict rdfs:label ?conflictLabel; schema:description ?description. } }`;
+                const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?regionLabel ?wikipediaUrl WHERE { BIND(wd:${countryQID} AS ?country) ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131* ?regionInstance . ?regionInstance wdt:P31/wdt:P279* wd:Q10864048. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?regionInstance rdfs:label ?regionLabel. } } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "es"; schema:isPartOf <https://es.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?conflict rdfs:label ?conflictLabel; schema:description ?description. } }`;
                 const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
                 
                 try {
@@ -339,7 +370,7 @@
                     processData(data);
                 } catch (error) {
                     console.error("Error fetching conflicts:", error);
-                    showError("No se pudieron cargar los conflictos desde Wikidata.");
+                    showError("No se pudieron cargar los conflictos.");
                 } finally {
                     showLoading(false);
                 }
@@ -372,7 +403,6 @@
             async function showConflictDetails(conflict) {
                 statsPanelWrapper.style.display = 'none';
                 const status = statusInfo[conflict.status] || statusInfo['Desconocido'];
-
                 detailsPanel.innerHTML = `
                     <div class="details-header">
                         <button class="close-btn" id="close-details-dynamic">&times;</button>
@@ -489,7 +519,26 @@
                     marker.bindPopup(`<strong>${conflict.name}</strong><br><em>${conflict.sector}</em>`);
                     marker.on("click", () => showConflictDetails(conflict));
                 });
-                if (markers.getLayers().length > 0) { map.invalidateSize(); map.fitBounds(markers.getBounds(), { padding: [50, 50] }); }
+                if (markers.getLayers().length > 0) { 
+                    map.invalidateSize(); 
+                    if (countryFilter.value === QID_CHILE) {
+                        map.setView([-35.6751, -71.543], 5);
+                    } else {
+                        map.fitBounds(markers.getBounds(), { padding: [50, 50] }); 
+                    }
+                } else {
+                    map.setView([20, 10], 2);
+                }
+            }
+
+            function populateCountryFilter(countries) {
+                countryFilter.innerHTML = '';
+                countries.sort((a,b) => a.name.localeCompare(b.name)).forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.id;
+                    option.textContent = country.name;
+                    countryFilter.appendChild(option);
+                });
             }
 
             function populateFilters(conflicts) {
@@ -554,13 +603,20 @@
             }
 
             // --- EVENT LISTENERS ---
-            ['search', 'region-filter', 'type-filter', 'status-filter', 'date-filter'].forEach(id => {
+            countryFilter.addEventListener('change', function() {
+                const selectedCountry = this.value;
+                if (selectedCountry) {
+                    fetchData(selectedCountry);
+                }
+            });
+
+            otherFilters.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', filterData);
             });
 
             // --- CARGA INICIAL ---
-            fetchWikidata();
+            initializeApp();
         });
     </script>
 </body>
