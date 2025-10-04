@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <link rel="icon" href="/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoConflictos - Mapa de Conflictos Socioambientales</title>
+    <title>GeoConflictos - Mapa Multilingüe de Conflictos Socioambientales</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,80 +17,132 @@
             --primary-dark: #2a52a2;
             --primary-light: #eaf3ff;
             --accent: #e63946;
-            --light-gray: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-dark: #202122;
-            --text-light: #54595d;
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #202122;
+            --text-secondary: #54595d;
             --border-color: #dee2e6;
             --green: #00af89;
             --orange: #f58d00;
             --space-lg: 1.5rem;
             --space-md: 1.25rem;
             --space-sm: 0.75rem;
+            --input-bg: #f1f5f9;
+        }
+
+        :root[data-theme="dark"] {
+            --primary: #4299e1;
+            --primary-dark: #2b6cb0;
+            --primary-light: #2c5282;
+            --accent: #f56565;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --green: #48bb78;
+            --orange: #ed8936;
+            --input-bg: #4a5568;
         }
         
         [v-cloak] { display: none; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        html, body { background-color: var(--light-gray); color: var(--text-dark); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; width: 100%; overflow-x: hidden; }
+        html, body { background-color: var(--bg-primary); color: var(--text-primary); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; width: 100%; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
         html.tutorial-active, body.tutorial-active { overflow: hidden; }
         #app { display: flex; flex-direction: column; min-height: 100vh; }
         
         .main-container { display: flex; flex-direction: column; flex-grow: 1; padding: var(--space-lg); gap: var(--space-lg); width: 100%; max-width: 1400px; margin: 0 auto; }
 
         .header {
-            background: #ffffff;
+            background: var(--bg-secondary);
             padding: var(--space-sm) var(--space-lg);
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: var(--space-md);
+            transition: background-color 0.3s, border-color 0.3s;
         }
+        .header-left { display: flex; align-items: center; gap: var(--space-md); }
         .header .logo-container { height: 50px; flex-shrink: 0; }
         .header .logo-container img { height: 100%; width: auto; object-fit: contain; }
         .header .title-group { display: flex; flex-direction: column; }
-        .header .logo-title { font-size: 1.4rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
-        .header .logo-subtitle { font-size: 0.9rem; color: var(--text-light); }
+        .header .logo-title { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .header .logo-subtitle { font-size: 0.9rem; color: var(--text-secondary); }
+        .header-right { display: flex; align-items: center; gap: 1rem; }
         
+        .lang-switcher { position: relative; }
+        .lang-switcher-btn { background: var(--primary-light); color: var(--primary-dark); border: none; padding: 0.6rem 1rem; border-radius: 50px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s; }
+        html[data-theme="dark"] .lang-switcher-btn { color: var(--primary); background: var(--bg-primary); }
+        .lang-switcher-btn:hover { background-color: #d8e6ff; }
+        html[data-theme="dark"] .lang-switcher-btn:hover { background-color: #4a5568; }
+        .lang-dropdown { position: absolute; top: 110%; right: 0; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); list-style: none; padding: 0.5rem; z-index: 1005; min-width: 150px; }
+        .lang-dropdown li { padding: 0.7rem 1rem; cursor: pointer; border-radius: 0.25rem; font-weight: 500; }
+        .lang-dropdown li:hover { background-color: var(--bg-primary); }
+
+        .theme-switcher-btn {
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+        .theme-switcher-btn:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
         .map-and-panels-wrapper { display: flex; flex-grow: 1; gap: var(--space-lg); min-height: 600px; margin-top: 1rem; }
-        .filters-panel { width: 280px; background-color: var(--card-bg); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); }
+        .filters-panel { width: 280px; background-color: var(--bg-secondary); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s; }
         .filters-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
         
         .filter-group { margin-bottom: var(--space-md); }
-        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-dark); font-size: 0.9rem; }
+        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
         .input-wrapper { position: relative; }
-        .input-wrapper .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; transition: color 0.2s; }
-        .input-wrapper input, .input-wrapper select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: var(--light-gray); border: 2px solid var(--light-gray); border-radius: 0.5rem; padding: 0.8rem; padding-left: 2.8rem; width: 100%; font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-wrapper .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; transition: color 0.2s; }
+        .input-wrapper input, .input-wrapper select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: var(--input-bg); border: 2px solid transparent; border-radius: 0.5rem; padding: 0.8rem; padding-left: 2.8rem; width: 100%; font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; color: var(--text-primary); }
         .input-wrapper select:not([multiple]) {
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%2354595d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23A0AEC0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
             background-repeat: no-repeat;
             background-position: right 0.7rem center;
             background-size: 1.2rem;
         }
-        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: var(--primary); background-color: #fff; }
+        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: var(--primary); background-color: var(--bg-secondary); }
         .input-wrapper input:focus + .icon, .input-wrapper select:focus + .icon { color: var(--primary); }
         .load-button { width: 100%; padding: 0.8rem; border: none; background-color: var(--primary); color: white; font-weight: 600; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
         .load-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
         
         .custom-select-container { position: relative; }
-        .custom-select-display { background-color: var(--light-gray); border: 2px solid var(--light-gray); border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+        .custom-select-display { background-color: var(--input-bg); border: 2px solid transparent; border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
         .custom-select-display.open { border-color: var(--primary); }
         .country-tag { background-color: var(--primary-light); color: var(--primary-dark); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
+        html[data-theme="dark"] .country-tag { color: var(--primary); }
         .country-tag .remove-tag { cursor: pointer; font-weight: bold; }
-        .placeholder-text { color: var(--text-light); padding-left: 0.3rem; }
-        .country-dropdown { position: absolute; top: 105%; left: 0; width: 100%; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1002; padding: 0.5rem; }
-        .country-search { width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: 0.25rem; margin-bottom: 0.5rem; }
+        .placeholder-text { color: var(--text-secondary); padding-left: 0.3rem; }
+        .country-dropdown { position: absolute; top: 105%; left: 0; width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1002; padding: 0.5rem; }
+        .country-search { width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: 0.25rem; margin-bottom: 0.5rem; background-color: var(--bg-primary); color: var(--text-primary); }
         .country-list-actions { padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
         .country-list-actions button { width: 100%; padding: 0.5rem; border: none; background-color: var(--primary-light); color: var(--primary-dark); font-weight: 600; border-radius: 0.25rem; cursor: pointer; transition: background-color 0.2s; }
+        html[data-theme="dark"] .country-list-actions button { color: var(--primary); }
         .country-list-actions button:hover { background-color: #d8e6ff; }
+        html[data-theme="dark"] .country-list-actions button:hover { background-color: #4a5568; }
         .country-list { max-height: 200px; overflow-y: auto; }
         .country-list-item { display: flex; align-items: center; padding: 0.6rem 0.5rem; cursor: pointer; border-radius: 0.25rem; }
-        .country-list-item:hover { background-color: var(--light-gray); }
+        .country-list-item:hover { background-color: var(--bg-primary); }
         .country-list-item input { margin-right: 0.7rem; }
         
-        .map-area { flex-grow: 1; position: relative; z-index: 1; background-color: var(--card-bg); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow: hidden; }
+        .map-area { flex-grow: 1; position: relative; z-index: 1; background-color: var(--bg-secondary); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow: hidden; transition: background-color 0.3s, border-color 0.3s;}
         #map-container { width: 100%; height: 100%; }
+        [data-theme="dark"] .leaflet-tile-pane { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
         .right-panel-wrapper { position: relative; width: 360px; flex-shrink: 0; z-index: 100; }
-        .details-panel { width: 100%; height: 100%; background-color: var(--card-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: absolute; right: 0; top: 0; transform: translateX(105%); opacity: 0; pointer-events: none; transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out; display: none; flex-direction: column; border-radius: 0.75rem; border: 1px solid var(--border-color); }
+        .details-panel { width: 100%; height: 100%; background-color: var(--bg-secondary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: absolute; right: 0; top: 0; transform: translateX(105%); opacity: 0; pointer-events: none; transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out, background-color 0.3s, border-color 0.3s; display: none; flex-direction: column; border-radius: 0.75rem; border: 1px solid var(--border-color); }
         .details-panel.active { transform: translateX(0); opacity: 1; pointer-events: auto; display: flex; }
         .details-header { padding: var(--space-md); background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; position: relative; flex-shrink: 0; border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
         .details-header h2 { font-size: 1.3rem; font-weight: 700; margin-right: 2rem; }
@@ -103,15 +155,15 @@
         .btn-wikidata { background-color: var(--primary); color: white; }
         .btn-wikipedia { background-color: var(--green); color: white; }
         .action-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .stats-panel-wrapper { width: 100%; height: 100%; background-color: var(--card-bg); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); }
+        .stats-panel-wrapper { width: 100%; height: 100%; background-color: var(--bg-secondary); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s;}
         .stats-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); }
-        .stat-card { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background-color: var(--card-bg); border-radius: 0.5rem; border-left: 4px solid; }
+        .stat-card { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background-color: var(--bg-secondary); border-radius: 0.5rem; border-left: 4px solid; }
         .stat-icon { font-size: 1.2rem; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; }
         .stat-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); }
-        .stat-label { font-size: 0.8rem; color: var(--text-light); }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
         .stat-total { border-color: var(--primary); }
         .stat-total .stat-icon { background-color: var(--primary); }
         .stat-active { border-color: var(--accent); }
@@ -126,11 +178,11 @@
         .sector-icon-wrapper { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: var(--space-sm); flex-shrink: 0; }
         .sector-icon { color: white; font-size: 1rem; }
         .sector-content { flex: 1; display: flex; flex-direction: column; }
-        .sector-label { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.3rem; }
+        .sector-label { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
         .sector-bar-wrapper { display: flex; align-items: center; width: 100%; }
-        .sector-bar-container { flex-grow: 1; background-color: #e0e0e0; border-radius: 5px; height: 8px; overflow: hidden; margin-right: 0.5rem; }
+        .sector-bar-container { flex-grow: 1; background-color: var(--border-color); border-radius: 5px; height: 8px; overflow: hidden; margin-right: 0.5rem; }
         .sector-bar { height: 100%; border-radius: 5px; transition: width 0.8s ease-out; }
-        .percentage-value { font-weight: 600; color: var(--text-dark); font-size: 0.85rem; min-width: 35px; text-align: right; }
+        .percentage-value { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; min-width: 35px; text-align: right; }
         
         .details-status-banner { padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-lg); border-radius: 0.5rem; display: flex; align-items: center; gap: var(--space-sm); font-weight: 600; font-size: 1rem; border-left-width: 5px; border-left-style: solid; }
         .details-status-banner .icon { font-size: 1.2rem; }
@@ -138,12 +190,18 @@
         .status-Latente { background-color: hsl(35, 100%, 96%); color: hsl(35, 100%, 35%); border-color: hsl(35, 100%, 50%); }
         .status-Resuelto { background-color: hsl(162, 100%, 96%); color: hsl(162, 100%, 25%); border-color: hsl(162, 100%, 35%); }
         .status-Desconocido { background-color: hsl(210, 8%, 96%); color: hsl(210, 8%, 40%); border-color: hsl(210, 8%, 60%); }
-        .details-description { font-size: 0.95rem; line-height: 1.7; color: var(--text-dark); margin-bottom: var(--space-lg); border-bottom: 1px solid var(--border-color); padding-bottom: var(--space-lg); }
+        
+        [data-theme="dark"] .status-Activo { background-color: #312424; color: #f56565; border-color: #e53e3e; }
+        [data-theme="dark"] .status-Latente { background-color: #332b21; color: #ed8936; border-color: #dd6b20; }
+        [data-theme="dark"] .status-Resuelto { background-color: #23312c; color: #48bb78; border-color: #38a169; }
+        [data-theme="dark"] .status-Desconocido { background-color: #30353c; color: #a0aec0; border-color: #718096; }
+
+        .details-description { font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); margin-bottom: var(--space-lg); border-bottom: 1px solid var(--border-color); padding-bottom: var(--space-lg); }
         .details-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
         .info-item { display: flex; align-items: flex-start; gap: var(--space-sm); }
         .info-item .icon { font-size: 1.1rem; color: var(--primary); margin-top: 0.15rem; }
-        .info-item .content label { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; display: block; }
-        .info-item .content .value { font-size: 0.95rem; font-weight: 500; color: var(--text-dark); }
+        .info-item .content label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; display: block; }
+        .info-item .content .value { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); }
         
         .tutorial-overlay {
             position: fixed;
@@ -168,7 +226,7 @@
         }
         .tutorial-popup {
             position: fixed;
-            background-color: var(--card-bg);
+            background-color: var(--bg-secondary);
             padding: var(--space-lg);
             border-radius: 0.75rem;
             border-top: 4px solid var(--primary);
@@ -188,14 +246,14 @@
             gap: 0.75rem;
             font-size: 1.2rem;
         }
-        .tutorial-popup p { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; }
+        .tutorial-popup p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
         .tutorial-nav { margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
         .tutorial-dots { display: flex; gap: 0.5rem; }
         .dot { width: 10px; height: 10px; background-color: var(--border-color); border-radius: 50%; transition: background-color 0.3s; }
         .dot.active { background-color: var(--primary); }
         .tutorial-nav button { background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
         .tutorial-nav button:hover:not(:disabled) { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .tutorial-nav button:disabled { background-color: var(--text-light); cursor: not-allowed; }
+        .tutorial-nav button:disabled { background-color: var(--text-secondary); cursor: not-allowed; }
 
         .welcome-modal-overlay {
             position: fixed;
@@ -215,7 +273,7 @@
             pointer-events: auto;
         }
         .welcome-modal {
-            background: white;
+            background: var(--bg-secondary);
             padding: 2.5rem;
             border-radius: 1rem;
             width: 90%;
@@ -237,11 +295,11 @@
         .welcome-modal h2 {
             font-family: 'EB Garamond', serif;
             font-size: 2.2rem;
-            color: var(--text-dark);
+            color: var(--text-primary);
             margin-bottom: 0.75rem;
         }
         .welcome-modal p {
-            color: var(--text-light);
+            color: var(--text-secondary);
             font-size: 1.05rem;
             line-height: 1.7;
             margin-bottom: 2rem;
@@ -263,18 +321,19 @@
             box-shadow: 0 6px 20px rgba(51, 102, 204, 0.5);
         }
 
-        footer { background-color: white; border-top: 1px solid var(--border-color); padding: var(--space-md) 0; flex-shrink: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 var(--space-lg); text-align: center; color: var(--text-light); }
+        footer { background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); padding: var(--space-md) 0; flex-shrink: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s;}
+        .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 var(--space-lg); text-align: center; color: var(--text-secondary); }
         .footer-logos { display: flex; justify-content: center; align-items: center; gap: var(--space-lg); margin-bottom: var(--space-sm); }
         .footer-logos img { height: 40px; width: auto; }
+        [data-theme="dark"] .footer-logos img { filter: invert(1) opacity(0.8); }
         .footer-text { font-size: 0.9rem; margin-bottom: 0.5rem; }
         .footer-copyright { font-size: 0.8rem; }
-        .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-light); position: absolute; width: 100%; background-color: rgba(255,255,255,0.7); z-index: 10; border-radius: 0.75rem; }
+        .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-secondary); position: absolute; width: 100%; background-color: rgba(0,0,0,0.5); z-index: 10; border-radius: 0.75rem; }
         .loading::after { content: ""; width: 24px; height: 24px; border: 3px solid var(--border-color); border-top: 3px solid var(--primary); border-radius: 50%; margin-left: 12px; animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .message { padding: var(--space-sm) var(--space-md); text-align: center; background-color: var(--primary-light); border-radius: 0.75rem; color: var(--primary); border-left: 4px solid var(--primary); position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1001; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         @media (max-width: 1200px) { .map-and-panels-wrapper { flex-direction: column; height: auto; min-height: unset; } .filters-panel, .right-panel-wrapper, .map-area { width: 100%; height: auto; } .map-area { height: 60vh; min-height: 450px; } .details-panel { position: relative; transform: none; opacity: 1; pointer-events: auto; } }
-        @media (max-width: 768px) { .main-container { padding: var(--space-sm); } .header { flex-direction: column; gap: 0.5rem; text-align: center; } }
+        @media (max-width: 768px) { .main-container { padding: var(--space-sm); } .header { flex-direction: column; gap: 0.5rem; text-align: center; } .header-left { justify-content: center; } .header-right { margin-top: 1rem; } }
     </style>
 </head>
 <body>
@@ -310,9 +369,9 @@
                                 <span v-for="(step, index) in tutorialSteps" :key="index" class="dot" :class="{ active: index === tutorialStep }"></span>
                             </div>
                             <div>
-                                <button @click="prevStep" :disabled="tutorialStep === 0">Anterior</button>
-                                <button @click="nextStep" v-if="tutorialStep < tutorialSteps.length - 1">Siguiente</button>
-                                <button @click="finishTutorial" v-else>Finalizar</button>
+                                <button @click="prevStep" :disabled="tutorialStep === 0">{{ t('tutorial.previous') }}</button>
+                                <button @click="nextStep" v-if="tutorialStep < tutorialSteps.length - 1">{{ t('tutorial.next') }}</button>
+                                <button @click="finishTutorial" v-else>{{ t('tutorial.finish') }}</button>
                             </div>
                         </div>
                     </div>
@@ -322,38 +381,55 @@
             <div :class="['welcome-modal-overlay', { active: showWelcomeModal }]">
                 <div class="welcome-modal">
                     <div class="icon">🗺️</div>
-                    <h2>Exploración Iniciada</h2>
-                    <p>¡Todo listo! Ya puedes navegar, filtrar y descubrir los conflictos socioambientales. ¡Que tu curiosidad sea tu guía!</p>
-                    <button @click="closeWelcomeModal">Comenzar a Explorar</button>
+                    <h2>{{ t('welcome.title') }}</h2>
+                    <p>{{ t('welcome.message') }}</p>
+                    <button @click="closeWelcomeModal">{{ t('welcome.button') }}</button>
                 </div>
             </div>
 
             <header class="header">
-                <div class="logo-container">
-                    <img src="/logo.png" alt="Logo Wikimedia Chile">
-                </div>
-                <div class="title-group">
-                    <h1 class="logo-title">GeoConflictos</h1>
-                    <p class="logo-subtitle">Mapa de conflictos socioambientales</p>
-                </div>
+                 <div class="header-left">
+                    <div class="logo-container">
+                        <img src="/logo.png" alt="Logo Wikimedia Chile">
+                    </div>
+                    <div class="title-group">
+                        <h1 class="logo-title">{{ t('header.title') }}</h1>
+                        <p class="logo-subtitle">{{ t('header.subtitle') }}</p>
+                    </div>
+                 </div>
+                 <div class="header-right">
+                     <div class="lang-switcher" ref="langSwitcherContainer">
+                        <button @click="isLangDropdownOpen = !isLangDropdownOpen" class="lang-switcher-btn">
+                            <i class="fas fa-globe"></i>
+                            <span>{{ supportedLangs[currentLang] }}</span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 0.3rem;"></i>
+                        </button>
+                        <ul class="lang-dropdown" v-if="isLangDropdownOpen">
+                            <li v-for="(name, code) in supportedLangs" @click="changeLanguage(code)">{{ name }}</li>
+                        </ul>
+                     </div>
+                     <button @click="toggleTheme" class="theme-switcher-btn" :aria-label="t('theme.toggle')">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                     </button>
+                 </div>
             </header>
 
             <div class="main-container">
                 <div class="map-and-panels-wrapper">
                     <div id="filters-panel" class="filters-panel">
-                        <h2><i class="fas fa-filter"></i> Filtros</h2>
+                        <h2><i class="fas fa-filter"></i> {{ t('filters.title') }}</h2>
                         <div class="filter-group">
-                            <label for="country-filter">País</label>
+                            <label for="country-filter">{{ t('filters.country') }}</label>
                              <div class="custom-select-container" ref="countrySelectContainer">
                                  <div class="custom-select-display" @click="isCountryDropdownOpen = !isCountryDropdownOpen" :class="{ open: isCountryDropdownOpen }">
-                                     <span v-if="filters.country.length === 0" class="placeholder-text">Seleccionar países...</span>
+                                     <span v-if="filters.country.length === 0" class="placeholder-text">{{ t('filters.selectCountries') }}</span>
                                      <div v-for="countryId in filters.country" :key="countryId" class="country-tag">
                                          <span>{{ getCountryName(countryId) }}</span>
                                          <span class="remove-tag" @click.stop="removeCountry(countryId)">&times;</span>
                                      </div>
                                  </div>
                                  <div class="country-dropdown" v-show="isCountryDropdownOpen">
-                                     <input type="text" class="country-search" v-model="countrySearchTerm" placeholder="Buscar país...">
+                                     <input type="text" class="country-search" v-model="countrySearchTerm" :placeholder="t('filters.searchCountry')">
                                      <div class="country-list-actions">
                                         <button @click.stop="toggleSelectAllCountries">{{ selectAllButtonText }}</button>
                                      </div>
@@ -367,50 +443,50 @@
                              </div>
                         </div>
                         <div class="filter-group">
-                            <button class="load-button" @click="onCountryChange">Ver Conflictos</button>
+                            <button class="load-button" @click="onCountryChange">{{ t('filters.viewConflicts') }}</button>
                         </div>
                         <div class="filter-group">
-                            <label for="search">Buscar por nombre</label>
+                            <label for="search">{{ t('filters.searchByName') }}</label>
                             <div class="input-wrapper">
-                                <input type="text" id="search" placeholder="Ej: Pascua Lama..." v-model="filters.search">
+                                <input type="text" id="search" :placeholder="t('filters.searchPlaceholder')" v-model="filters.search">
                                 <i class="fas fa-search icon"></i>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <label for="region-filter">Región</label>
+                            <label for="region-filter">{{ t('filters.region') }}</label>
                             <div class="input-wrapper">
                                 <select id="region-filter" v-model="filters.region" :disabled="filterOptions.regions.length === 0">
-                                     <option value="">Todas las regiones</option>
+                                     <option value="">{{ t('filters.allRegions') }}</option>
                                      <option v-for="region in filterOptions.regions" :key="region" :value="region">{{ region }}</option>
                                 </select>
                                 <i class="fas fa-map-marked-alt icon"></i>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <label for="type-filter">Sector</label>
+                            <label for="type-filter">{{ t('filters.sector') }}</label>
                             <div class="input-wrapper">
                                <select id="type-filter" v-model="filters.sector" :disabled="filterOptions.sectors.length === 0">
-                                   <option value="">Todos los sectores</option>
-                                   <option v-for="sector in filterOptions.sectors" :key="sector" :value="sector">{{ sector }}</option>
+                                   <option value="">{{ t('filters.allSectors') }}</option>
+                                   <option v-for="sector in filterOptions.sectors" :key="sector" :value="sector">{{ t('sectors.' + sector) }}</option>
                                </select>
                                <i class="fas fa-industry icon"></i>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <label for="status-filter">Estado</label>
+                            <label for="status-filter">{{ t('filters.status') }}</label>
                             <div class="input-wrapper">
                                 <select id="status-filter" v-model="filters.status">
-                                    <option value="">Todos los estados</option>
-                                    <option value="Activo">Activo</option>
-                                    <option value="Latente">Latente</option>
-                                    <option value="Resuelto">Resuelto</option>
-                                    <option value="Desconocido">Desconocido</option>
+                                    <option value="">{{ t('filters.allStatuses') }}</option>
+                                    <option value="Activo">{{ t('statuses.activo') }}</option>
+                                    <option value="Latente">{{ t('statuses.latente') }}</option>
+                                    <option value="Resuelto">{{ t('statuses.resuelto') }}</option>
+                                    <option value="Desconocido">{{ t('statuses.desconocido') }}</option>
                                 </select>
                                 <i class="fas fa-lightbulb icon"></i>
                             </div>
                         </div>
                          <div class="filter-group">
-                            <label for="date-filter">Fecha de inicio</label>
+                            <label for="date-filter">{{ t('filters.startDate') }}</label>
                             <div class="input-wrapper">
                                <input type="date" id="date-filter" v-model="filters.date">
                                <i class="fas fa-calendar-alt icon"></i>
@@ -421,38 +497,38 @@
                     <div class="map-area" id="map-area">
                         <div id="map-container" ref="mapContainer"></div>
                         <div class="loading" v-if="isLoading">
-                            Consultando Wikidata...
+                            {{ t('loading') }}
                         </div>
                     </div>
                     
                      <div class="right-panel-wrapper" id="stats-panel">
                          <div class="stats-panel-wrapper" v-show="!activeConflict">
                              <div class="stats-panel">
-                                 <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+                                 <h2><i class="fas fa-chart-bar"></i> {{ t('stats.title') }}</h2>
                                  <div class="stats-grid">
                                      <div class="stat-card stat-total">
                                          <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">Total</div></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">{{ t('stats.total') }}</div></div>
                                      </div>
                                      <div class="stat-card stat-active">
                                          <div class="stat-icon"><i class="fas fa-fire-alt"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.active }}</div><div class="stat-label">Activos</div></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.active }}</div><div class="stat-label">{{ t('stats.active') }}</div></div>
                                      </div>
                                      <div class="stat-card stat-latent">
                                          <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.latent }}</div><div class="stat-label">Latentes</div></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.latent }}</div><div class="stat-label">{{ t('stats.latent') }}</div></div>
                                      </div>
                                      <div class="stat-card stat-resolved">
                                          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.resolved }}</div><div class="stat-label">Resueltos</div></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.resolved }}</div><div class="stat-label">{{ t('stats.resolved') }}</div></div>
                                      </div>
                                  </div>
-                                 <h3><i class="fas fa-industry"></i> Distribución por Sector</h3>
+                                 <h3><i class="fas fa-industry"></i> {{ t('stats.sectorDistribution') }}</h3>
                                  <div class="sector-chart">
                                      <div class="sector-item" v-for="sector in stats.sectors" :key="sector.name">
                                          <div class="sector-icon-wrapper" :style="{ backgroundColor: sector.color }"><i :class="sector.icon" class="sector-icon"></i></div>
                                          <div class="sector-content">
-                                             <div class="sector-label">{{ sector.name }}</div>
+                                             <div class="sector-label">{{ t('sectors.' + sector.name) }}</div>
                                              <div class="sector-bar-wrapper">
                                                  <div class="sector-bar-container">
                                                      <div class="sector-bar" :style="{ width: sector.percentage + '%', backgroundColor: sector.color }"></div>
@@ -471,7 +547,7 @@
                                      <button class="close-btn" @click="activeConflict = null">&times;</button>
                                      <h2>{{ activeConflict.name }}</h2>
                                      <div>
-                                         <span :style="{ backgroundColor: getSectorColor(activeConflict.sector) }">{{ activeConflict.sector }}</span>
+                                         <span :style="{ backgroundColor: getSectorColor(activeConflict.sector) }">{{ t('sectors.' + activeConflict.sector) }}</span>
                                      </div>
                                  </div>
                                  <div class="details-body">
@@ -484,21 +560,21 @@
                                          <div class="info-item">
                                              <i class="fas fa-map-marked-alt icon"></i>
                                              <div class="content">
-                                                 <label>Ubicación</label>
-                                                 <span class="value">{{ activeConflict.region }} <span v-if="activeConflict.isImprecise">(aprox.)</span></span>
+                                                 <label>{{ t('details.location') }}</label>
+                                                 <span class="value">{{ activeConflict.region }} <span v-if="activeConflict.isImprecise">{{ t('details.approximate') }}</span></span>
                                              </div>
                                          </div>
                                          <div class="info-item">
                                              <i class="fas fa-calendar-alt icon"></i>
                                              <div class="content">
-                                                 <label>Fecha de inicio</label>
+                                                 <label>{{ t('details.startDate') }}</label>
                                                  <span class="value">{{ formatDate(activeConflict.startDate) }}</span>
                                              </div>
                                          </div>
                                      </div>
                                      <div class="action-buttons">
-                                         <button class="action-btn btn-wikidata" @click="openLink('https://www.wikidata.org/wiki/' + activeConflict.id)"><i class="fas fa-database"></i> Ver en Wikidata</button>
-                                         <button v-if="activeConflict.wikipediaUrl" class="action-btn btn-wikipedia" @click="openLink(activeConflict.wikipediaUrl)"><i class="fab fa-wikipedia-w"></i> Ver en Wikipedia</button>
+                                         <button class="action-btn btn-wikidata" @click="openLink('https://www.wikidata.org/wiki/' + activeConflict.id)"><i class="fas fa-database"></i> {{ t('details.viewOnWikidata') }}</button>
+                                         <button v-if="activeConflict.wikipediaUrl" class="action-btn btn-wikipedia" @click="openLink(activeConflict.wikipediaUrl)"><i class="fab fa-wikipedia-w"></i> {{ t('details.viewOnWikipedia') }}</button>
                                      </div>
                                  </div>
                                </div>
@@ -510,11 +586,11 @@
             <footer>
                 <div class="footer-container">
                     <div class="footer-logos">
-                        <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="/wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
-                        <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="/wikidata logo.png" alt="Logo Wikidata"></a>
+                        <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
+                        <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="wikidata logo.png" alt="Logo Wikidata"></a>
                     </div>
-                    <p class="footer-text">Desarrollado con datos de Wikidata, un proyecto de la Fundación Wikimedia.</p>
-                    <p class="footer-copyright">© {{ new Date().getFullYear() }} Wikimedia Chile. Contenido disponible bajo licencia CC BY-SA 4.0.</p>
+                    <p class="footer-text">{{ t('footer.text') }}</p>
+                    <p class="footer-copyright">© {{ new Date().getFullYear() }} {{ t('footer.copyright') }}</p>
                 </div>
             </footer>
         `;
@@ -524,10 +600,111 @@
             setup() {
                 // --- DEFINICIONES Y CONSTANTES ---
                 const QID_CHILE = "Q298";
-                const sectorKeywords = { 'Minero': ["minero", "minera", "mina", "pascua lama", "casale", "collahuasi", "codelco", "cobre", "litio"], 'Agua': ["agua", "hídrico", "represa", "río", "lago", "hidroeléctrica", "hidroaysén", "escasez", "glaciar", "sequía", "embalse", "mar", "océano", "costa", "puerto"], 'Forestal': ["forestal", "celulosa", "arauco", "cmpc", "bosque", "árbol", "plantación"], 'Industrial': ["industrial", "contaminación", "quintero", "refinería", "plomo", "pesquero", "salmonera", "derrame", "empresa"], 'Energético': ["energético", "termoeléctrica", "central", "carbón", "eólico", "eléctrica", "solar", "gas", "petróleo"], 'Protesta Social': ["protesta", "social", "estallido", "huelga", "disputa", "movilización", "comunidad", "vecinos", "mapuche"] };
+                const sectorKeywords = {
+                    es: { 'Minero': ["minero", "minera", "mina", "pascua lama", "casale", "collahuasi", "codelco", "cobre", "litio"], 'Agua': ["agua", "hídrico", "represa", "río", "lago", "hidroeléctrica", "hidroaysén", "escasez", "glaciar", "sequía", "embalse", "mar", "océano", "costa", "puerto"], 'Forestal': ["forestal", "celulosa", "arauco", "cmpc", "bosque", "árbol", "plantación"], 'Industrial': ["industrial", "contaminación", "quintero", "refinería", "plomo", "pesquero", "salmonera", "derrame", "empresa"], 'Energético': ["energético", "termoeléctrica", "central", "carbón", "eólico", "eléctrica", "solar", "gas", "petróleo"], 'Protesta Social': ["protesta", "social", "estallido", "huelga", "disputa", "movilización", "comunidad", "vecinos", "mapuche"] },
+                    en: { 'Minero': ["mine", "mining", "copper", "lithium", "codelco", "pascua lama"], 'Agua': ["water", "dam", "river", "lake", "hydroelectric", "shortage", "glacier", "drought", "reservoir", "sea", "ocean", "coast", "port"], 'Forestal': ["forestry", "pulp", "forest", "tree", "plantation"], 'Industrial': ["industrial", "pollution", "refinery", "lead", "fishing", "salmon", "spill", "factory"], 'Energético': ["energy", "thermoelectric", "power plant", "coal", "wind", "electric", "solar", "gas", "oil"], 'Protesta Social': ["protest", "social", "strike", "dispute", "mobilization", "community", "neighbors"] },
+                    it: { 'Minero': ["miniera", "estrazione", "rame", "litio"], 'Agua': ["acqua", "diga", "fiume", "lago", "idroelettrico", "siccità", "ghiacciaio", "serbatoio", "mare", "oceano", "costa", "porto"], 'Forestal': ["forestale", "cellulosa", "foresta", "albero", "piantagione"], 'Industrial': ["industriale", "inquinamento", "raffineria", "piombo", "pesca", "salmone", "versamento", "fabbrica"], 'Energético': ["energia", "termoelettrico", "centrale", "carbone", "eolico", "elettrico", "solare", "gas", "petrolio"], 'Protesta Social': ["protesta", "sociale", "sciopero", "disputa", "mobilitazione", "comunità"] },
+                    ja: { 'Minero': ["鉱山", "鉱業", "銅", "リチウム"], 'Agua': ["水", "ダム", "川", "湖", "水力発電", "干ばつ", "氷河", "貯水池", "海", "海岸", "港"], 'Forestal': ["林業", "パルプ", "森林", "植林"], 'Industrial': ["産業", "汚染", "製油所", "鉛", "漁業", "サケ", "流出", "工場"], 'Energético': ["エネルギー", "火力発電所", "石炭", "風力", "電気", "太陽光", "ガス", "石油"], 'Protesta Social': ["抗議", "社会", "ストライキ", "紛争", "動員", "コミュニティ"] }
+                };
                 const sectorColors = { 'Minero': "#ff9800", 'Agua': "#2196f3", 'Forestal': "#4caf50", 'Industrial': "#f44336", 'Energético': "#9c27b0", 'Protesta Social': "#e91e63", 'Otro': "#607d8b" };
                 const sectorIcons = { 'Minero': "fas fa-mountain", 'Agua': "fas fa-water", 'Forestal': "fas fa-tree", 'Industrial': "fas fa-industry", 'Energético': "fas fa-bolt", 'Protesta Social': "fas fa-users", 'Otro': "fas fa-question-circle" };
-                const statusInfo = { 'Activo': { icon: 'fa-fire-alt', text: 'Conflicto Activo' }, 'Latente': { icon: 'fa-hourglass-half', text: 'Conflicto Latente' }, 'Resuelto': { icon: 'fa-check-circle', text: 'Conflicto Resuelto' }, 'Desconocido': { icon: 'fa-question-circle', text: 'Estado Desconocido' } };
+                
+                // --- INTERNACIONALIZACIÓN (i18n) ---
+                const supportedLangs = reactive({
+                    'es': 'Español',
+                    'en': 'English',
+                    'it': 'Italiano',
+                    'ja': '日本語'
+                });
+                const currentLang = ref('es');
+                const isLangDropdownOpen = ref(false);
+                const langSwitcherContainer = ref(null);
+
+                const translations = {
+                    es: {
+                        header: { title: 'GeoConflictos', subtitle: 'Mapa de conflictos socioambientales' },
+                        filters: { title: 'Filtros', country: 'País', selectCountries: 'Seleccionar países...', searchCountry: 'Buscar país...', viewConflicts: 'Ver Conflictos', searchByName: 'Buscar por nombre', searchPlaceholder: 'Ej: Pascua Lama...', region: 'Región', allRegions: 'Todas las regiones', sector: 'Sector', allSectors: 'Todos los sectores', status: 'Estado', allStatuses: 'Todos los estados', startDate: 'Fecha de inicio' },
+                        statuses: { activo: 'Activo', latente: 'Latente', resuelto: 'Resuelto', desconocido: 'Desconocido' },
+                        sectors: { 'Minero': 'Minero', 'Agua': 'Agua', 'Forestal': 'Forestal', 'Industrial': 'Industrial', 'Energético': 'Energético', 'Protesta Social': 'Protesta Social', 'Otro': 'Otro' },
+                        loading: 'Consultando Wikidata...',
+                        stats: { title: 'Estadísticas', total: 'Total', active: 'Activos', latent: 'Latentes', resolved: 'Resueltos', sectorDistribution: 'Distribución por Sector' },
+                        details: { location: 'Ubicación', approximate: '(aprox.)', startDate: 'Fecha de inicio', viewOnWikidata: 'Ver en Wikidata', viewOnWikipedia: 'Ver en Wikipedia', noName: 'Sin nombre', noDescription: 'Sin descripción' },
+                        statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflicto Activo' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflicto Latente' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflicto Resuelto' }, Desconocido: { icon: 'fa-question-circle', text: 'Estado Desconocido' } },
+                        tutorial: { step1: { title: 'Panel de Filtros', text: 'Aquí puedes filtrar los conflictos por país, nombre, sector y más. Selecciona uno o varios países y presiona "Ver Conflictos" para empezar.' }, step2: { title: 'Mapa Interactivo', text: 'Los conflictos aparecerán aquí. Los puntos con borde discontinuo indican una ubicación aproximada. Haz clic en un punto para ver más detalles.' }, step3: { title: 'Estadísticas y Detalles', text: 'Este panel muestra un resumen de los conflictos visualizados. Al seleccionar un conflicto en el mapa, aquí verás su información detallada.' }, previous: 'Anterior', next: 'Siguiente', finish: 'Finalizar' },
+                        welcome: { title: 'Exploración Iniciada', message: '¡Todo listo! Ya puedes navegar, filtrar y descubrir los conflictos socioambientales. ¡Que tu curiosidad sea tu guía!', button: 'Comenzar a Explorar' },
+                        footer: { text: 'Desarrollado con datos de Wikidata, un proyecto de la Fundación Wikimedia.', copyright: 'Wikimedia Chile. Contenido disponible bajo licencia CC BY-SA 4.0.' },
+                        selectAll: 'Seleccionar todos',
+                        deselectAll: 'Deseleccionar todos',
+                        theme: { toggle: 'Cambiar tema' }
+                    },
+                    en: {
+                        header: { title: 'GeoConflicts', subtitle: 'Map of socio-environmental conflicts' },
+                        filters: { title: 'Filters', country: 'Country', selectCountries: 'Select countries...', searchCountry: 'Search country...', viewConflicts: 'View Conflicts', searchByName: 'Search by name', searchPlaceholder: 'E.g., Pascua Lama...', region: 'Region', allRegions: 'All regions', sector: 'Sector', allSectors: 'All sectors', status: 'Status', allStatuses: 'All statuses', startDate: 'Start date' },
+                        statuses: { activo: 'Active', latente: 'Latent', resuelto: 'Resolved', desconocido: 'Unknown' },
+                        sectors: { 'Minero': 'Mining', 'Agua': 'Water', 'Forestal': 'Forestry', 'Industrial': 'Industrial', 'Energético': 'Energy', 'Protesta Social': 'Social Protest', 'Otro': 'Other' },
+                        loading: 'Querying Wikidata...',
+                        stats: { title: 'Statistics', total: 'Total', active: 'Active', latent: 'Latent', resolved: 'Resolved', sectorDistribution: 'Distribution by Sector' },
+                        details: { location: 'Location', approximate: '(approx.)', startDate: 'Start Date', viewOnWikidata: 'View on Wikidata', viewOnWikipedia: 'View on Wikipedia', noName: 'No name', noDescription: 'No description' },
+                        statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Active Conflict' }, Latente: { icon: 'fa-hourglass-half', text: 'Latent Conflict' }, Resuelto: { icon: 'fa-check-circle', text: 'Resolved Conflict' }, Desconocido: { icon: 'fa-question-circle', text: 'Unknown Status' } },
+                        tutorial: { step1: { title: 'Filter Panel', text: 'Here you can filter conflicts by country, name, sector, and more. Select one or more countries and press "View Conflicts" to begin.' }, step2: { title: 'Interactive Map', text: 'Conflicts will appear here. Dashed border points indicate an approximate location. Click on a point for more details.' }, step3: { title: 'Statistics & Details', text: 'This panel shows a summary of the displayed conflicts. When you select a conflict on the map, its detailed information will appear here.' }, previous: 'Previous', next: 'Next', finish: 'Finish' },
+                        welcome: { title: 'Exploration Started', message: 'All set! You can now browse, filter, and discover socio-environmental conflicts. Let your curiosity be your guide!', button: 'Start Exploring' },
+                        footer: { text: 'Developed with data from Wikidata, a Wikimedia Foundation project.', copyright: 'Wikimedia Chile. Content available under a CC BY-SA 4.0 license.' },
+                        selectAll: 'Select All',
+                        deselectAll: 'Deselect All',
+                        theme: { toggle: 'Toggle theme' }
+                    },
+                    it: {
+                        header: { title: 'GeoConflitti', subtitle: 'Mappa dei conflitti socio-ambientali' },
+                        filters: { title: 'Filtri', country: 'Paese', selectCountries: 'Seleziona paesi...', searchCountry: 'Cerca paese...', viewConflicts: 'Mostra Conflitti', searchByName: 'Cerca per nome', searchPlaceholder: 'Es: TAV...', region: 'Regione', allRegions: 'Tutte le regioni', sector: 'Settore', allSectors: 'Tutti i settori', status: 'Stato', allStatuses: 'Tutti gli stati', startDate: 'Data di inizio' },
+                        statuses: { activo: 'Attivo', latente: 'Latente', resuelto: 'Risolto', desconocido: 'Sconosciuto' },
+                        sectors: { 'Minero': 'Minerario', 'Agua': 'Acqua', 'Forestal': 'Forestale', 'Industrial': 'Industriale', 'Energético': 'Energia', 'Protesta Social': 'Protesta Sociale', 'Otro': 'Altro' },
+                        loading: 'Interrogazione di Wikidata...',
+                        stats: { title: 'Statistiche', total: 'Totale', active: 'Attivi', latent: 'Latenti', resolved: 'Risolti', sectorDistribution: 'Distribuzione per Settore' },
+                        details: { location: 'Posizione', approximate: '(appross.)', startDate: 'Data di inizio', viewOnWikidata: 'Vedi su Wikidata', viewOnWikipedia: 'Vedi su Wikipedia', noName: 'Senza nome', noDescription: 'Nessuna descrizione' },
+                        statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflitto Attivo' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflitto Latente' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflitto Risolto' }, Desconocido: { icon: 'fa-question-circle', text: 'Stato Sconosciuto' } },
+                        tutorial: { step1: { title: 'Pannello Filtri', text: 'Qui puoi filtrare i conflitti per paese, nome, settore e altro. Seleziona uno o più paesi e premi "Mostra Conflitti" per iniziare.' }, step2: { title: 'Mappa Interattiva', text: 'I conflitti appariranno qui. I punti con bordo tratteggiato indicano una posizione approssimativa. Clicca su un punto per maggiori dettagli.' }, step3: { title: 'Statistiche e Dettagli', text: 'Questo pannello mostra un riepilogo dei conflitti visualizzati. Selezionando un conflitto sulla mappa, qui vedrai le sue informazioni dettagliate.' }, previous: 'Precedente', next: 'Successivo', finish: 'Fine' },
+                        welcome: { title: 'Esplorazione Iniziata', message: 'Tutto pronto! Ora puoi navigare, filtrare e scoprire i conflitti socio-ambientali. Lascia che la tua curiosità sia la tua guida!', button: 'Inizia a Esplorare' },
+                        footer: { text: 'Sviluppato con dati da Wikidata, un progetto della Wikimedia Foundation.', copyright: 'Wikimedia Chile. Contenuto disponibile con licenza CC BY-SA 4.0.' },
+                        selectAll: 'Seleziona tutto',
+                        deselectAll: 'Deseleziona tutto',
+                        theme: { toggle: 'Cambia tema' }
+                    },
+                    ja: {
+                        header: { title: 'GeoConflict', subtitle: '社会環境紛争マップ' },
+                        filters: { title: 'フィルター', country: '国', selectCountries: '国を選択...', searchCountry: '国を検索...', viewConflicts: '紛争を表示', searchByName: '名前で検索', searchPlaceholder: '例：辺野古...', region: '地域', allRegions: 'すべての地域', sector: 'セクター', allSectors: 'すべてのセクター', status: 'ステータス', allStatuses: 'すべてのステータス', startDate: '開始日' },
+                        statuses: { activo: '進行中', latente: '潜在的', resuelto: '解決済み', desconocido: '不明' },
+                        sectors: { 'Minero': '鉱業', 'Agua': '水', 'Forestal': '林業', 'Industrial': '産業', 'Energético': 'エネルギー', 'Protesta Social': '社会抗議', 'Otro': 'その他' },
+                        loading: 'Wikidataに問い合わせ中...',
+                        stats: { title: '統計', total: '合計', active: '進行中', latent: '潜在的', resolved: '解決済み', sectorDistribution: 'セクター別分布' },
+                        details: { location: '場所', approximate: '(おおよそ)', startDate: '開始日', viewOnWikidata: 'Wikidataで表示', viewOnWikipedia: 'Wikipediaで表示', noName: '名前なし', noDescription: '説明なし' },
+                        statusInfo: { Activo: { icon: 'fa-fire-alt', text: '進行中の紛争' }, Latente: { icon: 'fa-hourglass-half', text: '潜在的な紛争' }, Resuelto: { icon: 'fa-check-circle', text: '解決済みの紛争' }, Desconocido: { icon: 'fa-question-circle', text: '不明なステータス' } },
+                        tutorial: { step1: { title: 'フィルターパネル', text: 'ここで国、名前、セクターなどで紛争をフィルターできます。「紛争を表示」を押して開始します。' }, step2: { title: 'インタラクティブマップ', text: '紛争はここに表示されます。破線の点はおおよその場所を示します。詳細を見るには点をクリックしてください。' }, step3: { title: '統計と詳細', text: 'このパネルには表示された紛争の概要が表示されます。地図で紛争を選択すると、詳細情報がここに表示されます。' }, previous: '前へ', next: '次へ', finish: '終了' },
+                        welcome: { title: '探索開始', message: '準備完了！社会環境紛争を閲覧、フィルタリング、発見できます。好奇心をガイドにしましょう！', button: '探索を始める' },
+                        footer: { text: 'Wikimedia FoundationのプロジェクトであるWikidataのデータを使用して開発されました。', copyright: 'Wikimedia Chile. コンテンツはCC BY-SA 4.0ライセンスで利用可能です。' },
+                        selectAll: 'すべて選択',
+                        deselectAll: 'すべて選択解除',
+                        theme: { toggle: 'テーマを切り替え' }
+                    },
+                };
+
+                const t = (key) => {
+                    const keys = key.split('.');
+                    let result = translations[currentLang.value] || translations['es'];
+                    for (const k of keys) {
+                        if (result) result = result[k];
+                        else break;
+                    }
+                    if (result === undefined) {
+                         const fallbackKeys = key.split('.');
+                         let fallbackResult = translations['es'];
+                         for (const fk of fallbackKeys) {
+                             if (fallbackResult) fallbackResult = fallbackResult[fk];
+                             else return key;
+                         }
+                         return fallbackResult;
+                    }
+                    return result;
+                };
 
                 // --- ESTADO REACTIVO DE LA APLICACIÓN ---
                 const isLoading = ref(false);
@@ -541,16 +718,23 @@
                 const isTutorialActive = ref(false);
                 const tutorialStep = ref(0);
                 const showWelcomeModal = ref(false);
-                const tutorialSteps = [
-                    { element: '#filters-panel', title: 'Panel de Filtros', text: 'Aquí puedes filtrar los conflictos por país, nombre, sector y más. Selecciona uno o varios países y presiona "Ver Conflictos" para empezar.' },
-                    { element: '#map-area', title: 'Mapa Interactivo', text: 'Los conflictos aparecerán aquí. Los puntos con borde discontinuo indican una ubicación aproximada. Haz clic en un punto para ver más detalles.' },
-                    { element: '#stats-panel', title: 'Estadísticas y Detalles', text: 'Este panel muestra un resumen de los conflictos visualizados. Al seleccionar un conflicto en el mapa, aquí verás su información detallada.' }
-                ];
                 const tutorialPopupStyle = ref({});
                 const tutorialHighlightStyle = ref({});
+                const theme = ref('light');
                 let map = null;
                 let markers = null;
                 const mapContainer = ref(null);
+                
+                const toggleTheme = () => {
+                    const newTheme = theme.value === 'light' ? 'dark' : 'light';
+                    theme.value = newTheme;
+                };
+
+                watch(theme, (newTheme) => {
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('geoConflictosTheme', newTheme);
+                });
+
 
                 // --- PROPIEDADES COMPUTADAS ---
                 const filteredConflicts = computed(() => {
@@ -587,7 +771,7 @@
                 });
 
                 const filterOptions = computed(() => {
-                    const regions = [...new Set(allConflicts.value.filter(c => c.region && c.region !== 'No especificada' && c.countryName).map(c => `${c.countryName} - ${c.region}`))].sort();
+                    const regions = [...new Set(allConflicts.value.filter(c => c.region && c.region !== 'Not specified' && c.countryName).map(c => `${c.countryName} - ${c.region}`))].sort();
                     const sectors = [...new Set(allConflicts.value.map(c => c.sector).filter(Boolean))].sort();
                     return { regions, sectors };
                 });
@@ -597,11 +781,16 @@
                     return countries.value.filter(c => c.name.toLowerCase().includes(countrySearchTerm.value.toLowerCase()));
                 });
                 
-                const currentTutorialStep = computed(() => tutorialSteps[tutorialStep.value]);
+                const tutorialSteps = computed(() => [
+                    { element: '#filters-panel', title: t('tutorial.step1.title'), text: t('tutorial.step1.text') },
+                    { element: '#map-area', title: t('tutorial.step2.title'), text: t('tutorial.step2.text') },
+                    { element: '#stats-panel', title: t('tutorial.step3.title'), text: t('tutorial.step3.text') }
+                ]);
+                const currentTutorialStep = computed(() => tutorialSteps.value[tutorialStep.value]);
 
                 const selectAllButtonText = computed(() => {
-                    if (countries.value.length === 0) return 'Seleccionar todos';
-                    return filters.country.length === countries.value.length ? 'Deseleccionar todos' : 'Seleccionar todos';
+                    if (countries.value.length === 0) return t('selectAll');
+                    return filters.country.length === countries.value.length ? t('deselectAll') : t('selectAll');
                 });
 
                 // --- MÉTODOS ---
@@ -613,11 +802,11 @@
                     isLoading.value = true;
                     activeConflict.value = null;
                     const countriesFilter = `VALUES ?country { ${countryQIDs.map(id => `wd:${id}`).join(' ')} }`;
-                    const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?adminEntity ?adminEntityLabel ?wikipediaUrl ?countryLabel WHERE { ${countriesFilter} ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131 ?adminEntity. } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "es"; schema:isPartOf <https://es.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?conflict rdfs:label ?conflictLabel; schema:description ?description. ?adminEntity rdfs:label ?adminEntityLabel. ?country rdfs:label ?countryLabel. } }`;
+                    const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?adminEntity ?adminEntityLabel ?wikipediaUrl ?countryLabel WHERE { ${countriesFilter} ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131 ?adminEntity. } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "${currentLang.value}"; schema:isPartOf <https://${currentLang.value}.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". ?conflict rdfs:label ?conflictLabel; schema:description ?description. ?adminEntity rdfs:label ?adminEntityLabel. ?country rdfs:label ?countryLabel. } }`;
                     const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
                     try {
                         const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                        if (!response.ok) throw new Error(`Error de red: ${response.status}`);
+                        if (!response.ok) throw new Error(`Network error: ${response.status}`);
                         const data = await response.json();
                         await processData(data);
                     } catch (error) {
@@ -626,13 +815,24 @@
                         isLoading.value = false;
                     }
                 };
+                
+                const getConflictSector = (conflict) => {
+                    const textToSearch = `${(conflict.name || '').toLowerCase()} ${(conflict.description || '').toLowerCase()}`;
+                    const keywordsForLang = sectorKeywords[currentLang.value] || sectorKeywords['en'];
+                    for (const [sector, keywords] of Object.entries(keywordsForLang)) {
+                        if (keywords.some(k => textToSearch.includes(k))) {
+                            return sector;
+                        }
+                    }
+                    return 'Otro';
+                };
 
                 const processData = async (data) => {
                     const uniqueConflicts = new Map();
                      data.results.bindings.forEach(b => {
                          const id = b.conflict.value.split('/').pop();
                          if (!uniqueConflicts.has(id)) {
-                             const conflict = { id, name: b.conflictLabel?.value || 'Sin nombre', description: b.description?.value || 'Sin descripción', startDate: b.startDate?.value, endDate: b.endDate?.value, region: b.adminEntityLabel?.value || 'No especificada', adminEntityId: b.adminEntity?.value.split('/').pop(), coords: null, isImprecise: false, wikipediaUrl: b.wikipediaUrl?.value, countryName: b.countryLabel?.value };
+                             const conflict = { id, name: b.conflictLabel?.value || t('details.noName'), description: b.description?.value || t('details.noDescription'), startDate: b.startDate?.value, endDate: b.endDate?.value, region: b.adminEntityLabel?.value || 'Not specified', adminEntityId: b.adminEntity?.value.split('/').pop(), coords: null, isImprecise: false, wikipediaUrl: b.wikipediaUrl?.value, countryName: b.countryLabel?.value };
                              if (b.coords) { const match = b.coords.value.match(/Point\(([-\d.]+) ([-\d.]+)\)/); if (match) conflict.coords = [parseFloat(match[2]), parseFloat(match[1])]; }
                              conflict.status = determineStatus(conflict.startDate, conflict.endDate);
                              conflict.sector = getConflictSector(conflict);
@@ -677,7 +877,7 @@
                 
                 const showConflictDetails = async (conflict) => {
                     activeConflict.value = conflict;
-                    if (['conflicto socioambiental', 'conflicto ambiental', 'sin descripción'].includes(conflict.description.toLowerCase().trim()) && conflict.wikipediaUrl) {
+                    if ((conflict.description.toLowerCase().trim().includes('conflict') || conflict.description.toLowerCase().trim().includes('conflicto') || conflict.description.toLowerCase().trim() === t('details.noDescription')) && conflict.wikipediaUrl) {
                         const summary = await fetchWikipediaSummary(conflict.wikipediaUrl);
                         if (summary && activeConflict.value?.id === conflict.id) {
                             activeConflict.value.description = summary;
@@ -689,7 +889,7 @@
                     if (!wikipediaUrl) return null;
                     try {
                         const pageTitle = decodeURIComponent(wikipediaUrl.split('/').pop());
-                        const apiUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
+                        const apiUrl = `https://${currentLang.value}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
                         const response = await fetch(apiUrl);
                         if (!response.ok) return null;
                         const data = await response.json();
@@ -697,11 +897,10 @@
                     } catch { return null; }
                 };
                 const determineStatus = (startDateStr, endDateStr) => { const now = new Date(); if (endDateStr && new Date(endDateStr) < now) return 'Resuelto'; if (startDateStr) return new Date(startDateStr) < new Date(new Date().setFullYear(new Date().getFullYear() - 15)) ? 'Latente' : 'Activo'; return 'Desconocido'; };
-                const getConflictSector = (conflict) => { const textToSearch = `${conflict.name.toLowerCase()} ${conflict.description.toLowerCase()}`; for (const [sector, keywords] of Object.entries(sectorKeywords)) { if (keywords.some(k => textToSearch.includes(k))) return sector; } return 'Otro'; };
                 
                 const getSectorColor = (sector) => sectorColors[sector] || '#607d8b';
-                const getStatusInfo = (status) => statusInfo[status] || statusInfo['Desconocido'];
-                const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'Desconocido';
+                const getStatusInfo = (status) => t('statusInfo')[status] || t('statusInfo')['Desconocido'];
+                const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString(currentLang.value) : t('statuses.desconocido');
                 const openLink = (url) => { if(url) window.open(url, '_blank'); };
 
                 const getCountryName = (id) => countries.value.find(c => c.id === id)?.name || id;
@@ -714,8 +913,15 @@
                         filters.country = countries.value.map(c => c.id);
                     }
                 };
+                const changeLanguage = async (langCode) => {
+                    currentLang.value = langCode;
+                    document.documentElement.lang = langCode;
+                    isLangDropdownOpen.value = false;
+                    await fetchCountries(); // Re-fetch country names in the new language
+                    await fetchData(filters.country); // Re-fetch conflicts
+                };
 
-                const nextStep = () => { if (tutorialStep.value < tutorialSteps.length - 1) tutorialStep.value++; };
+                const nextStep = () => { if (tutorialStep.value < tutorialSteps.value.length - 1) tutorialStep.value++; };
                 const prevStep = () => { if (tutorialStep.value > 0) tutorialStep.value--; };
                 const finishTutorial = () => {
                     isTutorialActive.value = false;
@@ -753,6 +959,9 @@
                     if (countrySelectContainer.value && !countrySelectContainer.value.contains(event.target)) {
                         isCountryDropdownOpen.value = false;
                     }
+                    if (langSwitcherContainer.value && !langSwitcherContainer.value.contains(event.target)) {
+                        isLangDropdownOpen.value = false;
+                    }
                 };
                 
                 const handleResize = () => {
@@ -761,21 +970,36 @@
                     }
                 };
 
-                onMounted(async () => {
-                    map = L.map(mapContainer.value).setView([-40, -71], 4);
-                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap' }).addTo(map);
-                    markers = L.featureGroup().addTo(map);
-
-                    const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } } ORDER BY ?countryLabel`;
+                const fetchCountries = async () => {
+                     const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". } } ORDER BY ?countryLabel`;
                     const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
                     try {
                         const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
                         const data = await response.json();
                         countries.value = data.results.bindings.map(b => ({ id: b.country.value.split('/').pop(), name: b.countryLabel.value })).filter(c => c.name);
-                        await fetchData(filters.country);
                     } catch (error) {
                          console.error("Error fetching countries:", error);
                     }
+                };
+
+                onMounted(async () => {
+                    const savedTheme = localStorage.getItem('geoConflictosTheme');
+                    if (savedTheme) {
+                        theme.value = savedTheme;
+                    }
+
+                    const userLang = navigator.language.split('-')[0];
+                    if (Object.keys(supportedLangs).includes(userLang)) {
+                        currentLang.value = userLang;
+                    }
+                    document.documentElement.lang = currentLang.value;
+
+                    map = L.map(mapContainer.value).setView([-40, -71], 4);
+                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                    markers = L.featureGroup().addTo(map);
+                    
+                    await fetchCountries();
+                    await fetchData(filters.country);
                     
                     document.addEventListener('click', handleClickOutside);
                     window.addEventListener('resize', handleResize);
@@ -817,7 +1041,7 @@
                         
                         L.marker(conflict.coords, { icon: icon })
                             .addTo(markers)
-                            .bindPopup(`<strong>${conflict.name}</strong><br><em>${conflict.sector}</em>`)
+                            .bindPopup(`<strong>${conflict.name}</strong><br><em>${t('sectors.' + conflict.sector)}</em>`)
                             .on("click", () => showConflictDetails(conflict));
                     });
 
@@ -834,10 +1058,11 @@
                 });
 
                 return {
-                    isLoading, countries, filters, filteredConflicts, stats, filterOptions, activeConflict, mapContainer, onCountryChange, getSectorColor, getStatusInfo, formatDate, openLink, isCountryDropdownOpen, countrySearchTerm, filteredCountries, getCountryName, removeCountry, countrySelectContainer, isTutorialActive, tutorialStep, tutorialSteps, currentTutorialStep, nextStep, prevStep, finishTutorial, tutorialPopupStyle, tutorialHighlightStyle, showWelcomeModal, closeWelcomeModal, toggleSelectAllCountries, selectAllButtonText
+                    isLoading, countries, filters, filteredConflicts, stats, filterOptions, activeConflict, mapContainer, onCountryChange, getSectorColor, getStatusInfo, formatDate, openLink, isCountryDropdownOpen, countrySearchTerm, filteredCountries, getCountryName, removeCountry, countrySelectContainer, isTutorialActive, tutorialStep, currentTutorialStep, nextStep, prevStep, finishTutorial, tutorialPopupStyle, tutorialHighlightStyle, showWelcomeModal, closeWelcomeModal, toggleSelectAllCountries, selectAllButtonText, supportedLangs, currentLang, changeLanguage, isLangDropdownOpen, langSwitcherContainer, t, tutorialSteps, theme, toggleTheme
                 };
             }
         }).mount('#app');
     </script>
 </body>
 </html>
+
