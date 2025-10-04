@@ -4,7 +4,7 @@
     <link rel="icon" href="/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoConflictos Chile - Mapa de Conflictos Socioambientales</title>
+    <title>GeoConflictos - Mapa de Conflictos Socioambientales</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,8 +29,10 @@
             --space-sm: 0.75rem;
         }
         
+        [v-cloak] { display: none; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         html, body { background-color: var(--light-gray); color: var(--text-dark); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; width: 100%; overflow-x: hidden; }
+        html.tutorial-active, body.tutorial-active { overflow: hidden; }
         #app { display: flex; flex-direction: column; min-height: 100vh; }
         
         .main-container { display: flex; flex-direction: column; flex-grow: 1; padding: var(--space-lg); gap: var(--space-lg); width: 100%; max-width: 1400px; margin: 0 auto; }
@@ -43,116 +45,56 @@
             align-items: center;
             gap: var(--space-md);
         }
-        .header .logo-container {
-            height: 50px;
-            flex-shrink: 0;
-        }
-        .header .logo-container img {
-            height: 100%;
-            width: auto;
-            object-fit: contain;
-        }
+        .header .logo-container { height: 50px; flex-shrink: 0; }
+        .header .logo-container img { height: 100%; width: auto; object-fit: contain; }
         .header .title-group { display: flex; flex-direction: column; }
-        .header .logo-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            line-height: 1.2;
-        }
-        .header .logo-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .explanation-section { 
-            background-color: var(--card-bg);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            padding: var(--space-lg);
-            text-align: center;
-            animation: fadeInSlideDown 0.8s ease-out forwards; 
-            opacity:0; 
-            transform: translateY(-20px);
-        }
-        .explanation-section h1 {
-            font-family: 'EB Garamond', serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-        }
-        .explanation-section h1 .icon {
-            color: var(--primary);
-        }
-        .explanation-section p { 
-            font-size: 1rem; 
-            color: var(--text-light); 
-            line-height: 1.7;
-            max-width: 700px; 
-            margin: 0 auto; 
-        }
-        .explanation-section p strong {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
+        .header .logo-title { font-size: 1.4rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+        .header .logo-subtitle { font-size: 0.9rem; color: var(--text-light); }
         
-        @keyframes fadeInSlideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .map-and-panels-wrapper { display: flex; flex-grow: 1; gap: var(--space-lg); min-height: 600px; }
+        .map-and-panels-wrapper { display: flex; flex-grow: 1; gap: var(--space-lg); min-height: 600px; margin-top: 1rem; }
         .filters-panel { width: 280px; background-color: var(--card-bg); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); }
         .filters-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
         
         .filter-group { margin-bottom: var(--space-md); }
         .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-dark); font-size: 0.9rem; }
         .input-wrapper { position: relative; }
-        .input-wrapper .icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-            pointer-events: none;
-            transition: color 0.2s;
-        }
-        .input-wrapper input, .input-wrapper select {
-            appearance: none; -webkit-appearance: none; -moz-appearance: none;
-            background-color: var(--light-gray);
-            border: 2px solid var(--light-gray);
-            border-radius: 0.5rem;
-            padding: 0.8rem;
-            padding-left: 2.8rem;
-            width: 100%;
-            font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .input-wrapper select {
+        .input-wrapper .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; transition: color 0.2s; }
+        .input-wrapper input, .input-wrapper select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: var(--light-gray); border: 2px solid var(--light-gray); border-radius: 0.5rem; padding: 0.8rem; padding-left: 2.8rem; width: 100%; font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-wrapper select:not([multiple]) {
             background-image: url('data:image/svg+xml;utf8,<svg fill="%2354595d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
             background-repeat: no-repeat;
             background-position: right 0.7rem center;
             background-size: 1.2rem;
         }
-        .input-wrapper input:focus, .input-wrapper select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background-color: #fff;
-        }
-        .input-wrapper input:focus + .icon, .input-wrapper select:focus + .icon {
-            color: var(--primary);
-        }
-
+        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: var(--primary); background-color: #fff; }
+        .input-wrapper input:focus + .icon, .input-wrapper select:focus + .icon { color: var(--primary); }
+        .load-button { width: 100%; padding: 0.8rem; border: none; background-color: var(--primary); color: white; font-weight: 600; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
+        .load-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        
+        .custom-select-container { position: relative; }
+        .custom-select-display { background-color: var(--light-gray); border: 2px solid var(--light-gray); border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+        .custom-select-display.open { border-color: var(--primary); }
+        .country-tag { background-color: var(--primary-light); color: var(--primary-dark); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
+        .country-tag .remove-tag { cursor: pointer; font-weight: bold; }
+        .placeholder-text { color: var(--text-light); padding-left: 0.3rem; }
+        .country-dropdown { position: absolute; top: 105%; left: 0; width: 100%; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1002; padding: 0.5rem; }
+        .country-search { width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: 0.25rem; margin-bottom: 0.5rem; }
+        .country-list-actions { padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+        .country-list-actions button { width: 100%; padding: 0.5rem; border: none; background-color: var(--primary-light); color: var(--primary-dark); font-weight: 600; border-radius: 0.25rem; cursor: pointer; transition: background-color 0.2s; }
+        .country-list-actions button:hover { background-color: #d8e6ff; }
+        .country-list { max-height: 200px; overflow-y: auto; }
+        .country-list-item { display: flex; align-items: center; padding: 0.6rem 0.5rem; cursor: pointer; border-radius: 0.25rem; }
+        .country-list-item:hover { background-color: var(--light-gray); }
+        .country-list-item input { margin-right: 0.7rem; }
+        
         .map-area { flex-grow: 1; position: relative; z-index: 1; background-color: var(--card-bg); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow: hidden; }
-        #map { width: 100%; height: 100%; }
+        #map-container { width: 100%; height: 100%; }
         .right-panel-wrapper { position: relative; width: 360px; flex-shrink: 0; z-index: 100; }
         .details-panel { width: 100%; height: 100%; background-color: var(--card-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: absolute; right: 0; top: 0; transform: translateX(105%); opacity: 0; pointer-events: none; transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out; display: none; flex-direction: column; border-radius: 0.75rem; border: 1px solid var(--border-color); }
         .details-panel.active { transform: translateX(0); opacity: 1; pointer-events: auto; display: flex; }
         .details-header { padding: var(--space-md); background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; position: relative; flex-shrink: 0; border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
-        #conflict-name-text { font-size: 1.3rem; font-weight: 700; margin-right: 2rem; }
-        #conflict-sector { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .details-header h2 { font-size: 1.3rem; font-weight: 700; margin-right: 2rem; }
+        .details-header span { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .close-btn { position: absolute; top: 0.8rem; right: 0.8rem; background: none; border: none; font-size: 1.8rem; color: rgba(255,255,255,0.8); cursor: pointer; line-height: 1; transition: color 0.2s; }
         .close-btn:hover { color: white; }
         .details-body { padding: var(--space-md); overflow-y: auto; flex-grow: 1; }
@@ -203,6 +145,124 @@
         .info-item .content label { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; display: block; }
         .info-item .content .value { font-size: 0.95rem; font-weight: 500; color: var(--text-dark); }
         
+        .tutorial-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .tutorial-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .tutorial-highlight-box {
+            position: fixed; 
+            border-radius: 0.75rem;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+            z-index: 10001;
+            transition: all 0.4s ease-in-out;
+            pointer-events: none;
+        }
+        .tutorial-popup {
+            position: fixed;
+            background-color: var(--card-bg);
+            padding: var(--space-lg);
+            border-radius: 0.75rem;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            width: 320px;
+            z-index: 10002;
+            transition: all 0.4s ease-in-out;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .tutorial-popup h3 { 
+            color: var(--primary); 
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+        }
+        .tutorial-popup p { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; }
+        .tutorial-nav { margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .tutorial-dots { display: flex; gap: 0.5rem; }
+        .dot { width: 10px; height: 10px; background-color: var(--border-color); border-radius: 50%; transition: background-color 0.3s; }
+        .dot.active { background-color: var(--primary); }
+        .tutorial-nav button { background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
+        .tutorial-nav button:hover:not(:disabled) { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .tutorial-nav button:disabled { background-color: var(--text-light); cursor: not-allowed; }
+
+        .welcome-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 11000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .welcome-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .welcome-modal {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .welcome-modal-overlay.active .welcome-modal {
+            transform: scale(1);
+        }
+        .welcome-modal .icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        .welcome-modal h2 {
+            font-family: 'EB Garamond', serif;
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+        }
+        .welcome-modal p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        .welcome-modal button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(51, 102, 204, 0.4);
+        }
+        .welcome-modal button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(51, 102, 204, 0.5);
+        }
+
         footer { background-color: white; border-top: 1px solid var(--border-color); padding: var(--space-md) 0; flex-shrink: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 var(--space-lg); text-align: center; color: var(--text-light); }
         .footer-logos { display: flex; justify-content: center; align-items: center; gap: var(--space-lg); margin-bottom: var(--space-sm); }
@@ -218,406 +278,566 @@
     </style>
 </head>
 <body>
-    <div id="app">
-        <header class="header">
-            <div class="logo-container">
-                <img src="/logo.png" alt="Logo Wikimedia Chile">
-            </div>
-            <div class="title-group">
-                <h1 class="logo-title">GeoConflictos Chile</h1>
-                <p class="logo-subtitle">Mapa de conflictos socioambientales</p>
-            </div>
-        </header>
-
-        <div class="main-container">
-            <div class="explanation-section">
-                <h1><i class="fas fa-map-signs icon"></i> Bienvenido a GeoConflictos</h1>
-                <p>Esta plataforma interactiva utiliza <strong>datos abiertos</strong> para mapear y explorar las <strong>tensiones territoriales y ambientales</strong> a lo largo de Chile.</p>
-            </div>
-            <div class="map-and-panels-wrapper">
-                <div class="filters-panel">
-                    <h2><i class="fas fa-filter"></i> Filtros</h2>
-                    <div class="filter-group">
-                        <label for="country-filter">País</label>
-                        <div class="input-wrapper">
-                            <select id="country-filter"><option value="">Cargando países...</option></select>
-                            <i class="fas fa-flag icon"></i>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="search">Buscar por nombre</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="search" placeholder="Ej: Pascua Lama...">
-                            <i class="fas fa-search icon"></i>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="region-filter">Región</label>
-                        <div class="input-wrapper">
-                            <select id="region-filter"><option value="">Seleccione un país</option></select>
-                            <i class="fas fa-map-marked-alt icon"></i>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="type-filter">Sector</label>
-                        <div class="input-wrapper">
-                           <select id="type-filter"><option value="">Seleccione un país</option></select>
-                           <i class="fas fa-industry icon"></i>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="status-filter">Estado</label>
-                        <div class="input-wrapper">
-                            <select id="status-filter">
-                                <option value="">Todos los estados</option>
-                                <option value="Activo">Activo</option>
-                                <option value="Latente">Latente</option>
-                                <option value="Resuelto">Resuelto</option>
-                                <option value="Desconocido">Desconocido</option>
-                            </select>
-                            <i class="fas fa-lightbulb icon"></i>
-                        </div>
-                    </div>
-                     <div class="filter-group">
-                        <label for="date-filter">Fecha de inicio</label>
-                        <div class="input-wrapper">
-                           <input type="date" id="date-filter">
-                           <i class="fas fa-calendar-alt icon"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="map-area">
-                    <div id="map"></div>
-                </div>
-                
-                <div class="right-panel-wrapper">
-                    <div class="stats-panel-wrapper" id="stats-panel-wrapper">
-                        <div class="stats-panel" id="stats-panel-content">
-                            </div>
-                    </div>
-                    <div class="details-panel" id="details-panel"></div>
-                </div>
-            </div>
-        </div>
-        
-        <footer>
-            <div class="footer-container">
-                <div class="footer-logos">
-                    <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="/wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
-                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="/wikidata logo.png" alt="Logo Wikidata"></a>
-                </div>
-                <p class="footer-text">Desarrollado con datos de Wikidata, un proyecto de la Fundación Wikimedia.</p>
-                <p class="footer-copyright">© <span id="current-year"></span> Wikimedia Chile. Contenido disponible bajo licencia CC BY-SA 4.0.</p>
-            </div>
-        </footer>
+    <div id="app" v-cloak>
+        <!-- El contenido se renderizará aquí por Vue -->
     </div>
 
+    <!-- Carga de Leaflet ANTES de la app Vue -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- DEFINICIONES Y CONSTANTES ---
-            const QID_CHILE = "Q298";
-            const sectorKeywords = { 'Minero': ["minero", "minera", "mina", "pascua lama", "casale", "collahuasi", "codelco", "cobre", "litio"], 'Agua': ["agua", "hídrico", "represa", "río", "lago", "hidroeléctrica", "hidroaysén", "escasez", "glaciar", "sequía", "embalse", "mar", "océano", "costa", "puerto"], 'Forestal': ["forestal", "celulosa", "arauco", "cmpc", "bosque", "árbol", "plantación"], 'Industrial': ["industrial", "contaminación", "quintero", "refinería", "plomo", "pesquero", "salmonera", "derrame", "empresa"], 'Energético': ["energético", "termoeléctrica", "central", "carbón", "eólico", "eléctrica", "solar", "gas", "petróleo"], 'Protesta Social': ["protesta", "social", "estallido", "huelga", "disputa", "movilización", "comunidad", "vecinos", "mapuche"] };
-            const sectorColors = { 'Minero': "#ff9800", 'Agua': "#2196f3", 'Forestal': "#4caf50", 'Industrial': "#f44336", 'Energético': "#9c27b0", 'Protesta Social': "#e91e63", 'Otro': "#607d8b" };
-            const sectorIcons = { 'Minero': "fas fa-mountain", 'Agua': "fas fa-water", 'Forestal': "fas fa-tree", 'Industrial': "fas fa-industry", 'Energético': "fas fa-bolt", 'Protesta Social': "fas fa-users", 'Otro': "fas fa-question-circle" };
-            const statusInfo = { 'Activo': { icon: 'fa-fire-alt', text: 'Conflicto Activo' }, 'Latente': { icon: 'fa-hourglass-half', text: 'Conflicto Latente' }, 'Resuelto': { icon: 'fa-check-circle', text: 'Conflicto Resuelto' }, 'Desconocido': { icon: 'fa-question-circle', text: 'Estado Desconocido' } };
-            
-            // --- INICIALIZACIÓN Y VARIABLES GLOBALES ---
-            document.getElementById("current-year").textContent = new Date().getFullYear();
-            const map = L.map("map").setView([-35.6751, -71.543], 5);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
-            const markers = L.featureGroup().addTo(map);
-            let allConflicts = [];
-            
-            const detailsPanel = document.getElementById("details-panel");
-            const statsPanelWrapper = document.getElementById("stats-panel-wrapper");
-            const statsPanelContent = document.getElementById("stats-panel-content");
-            const countryFilter = document.getElementById('country-filter');
-            const otherFilters = ['search', 'region-filter', 'type-filter', 'status-filter', 'date-filter'];
 
-            // --- LÓGICA PRINCIPAL ---
+    <!-- Carga de Vue 3 -->
+    <script type="importmap">
+    {
+        "imports": {
+            "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+        }
+    }
+    </script>
 
-            async function initializeApp() {
-                await fetchCountries();
-                countryFilter.value = QID_CHILE;
-                await fetchData(QID_CHILE);
-            }
+    <script type="module">
+        import { createApp, ref, reactive, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue';
 
-            async function fetchCountries() {
-                const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } } ORDER BY ?countryLabel`;
-                const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
-                try {
-                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                    const data = await response.json();
-                    const countries = data.results.bindings.map(b => ({ id: b.country.value.split('/').pop(), name: b.countryLabel.value }));
-                    populateCountryFilter(countries);
-                } catch (error) {
-                    console.error("Error fetching countries:", error);
-                    countryFilter.innerHTML = '<option value="">Error al cargar</option>';
-                }
-            }
-
-            async function fetchData(countryQID) {
-                showLoading(true);
-                const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?regionLabel ?wikipediaUrl WHERE { BIND(wd:${countryQID} AS ?country) ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131* ?regionInstance . ?regionInstance wdt:P31/wdt:P279* wd:Q10864048. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?regionInstance rdfs:label ?regionLabel. } } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "es"; schema:isPartOf <https://es.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?conflict rdfs:label ?conflictLabel; schema:description ?description. } }`;
-                const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
-                
-                try {
-                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                    if (!response.ok) throw new Error(`Error de red: ${response.status}`);
-                    const data = await response.json();
-                    processData(data);
-                } catch (error) {
-                    console.error("Error fetching conflicts:", error);
-                    showError("No se pudieron cargar los conflictos.");
-                } finally {
-                    showLoading(false);
-                }
-            }
-            
-            function processData(data) {
-                const uniqueConflicts = new Map();
-                data.results.bindings.forEach(b => {
-                    const id = b.conflict.value.split('/').pop();
-                    if (!uniqueConflicts.has(id)) {
-                        const conflict = { id: id, name: b.conflictLabel?.value || 'Sin nombre', description: b.description?.value || 'Sin descripción', startDate: b.startDate?.value, endDate: b.endDate?.value, region: b.regionLabel?.value || 'No especificada', coords: null, wikipediaUrl: b.wikipediaUrl?.value };
-                        if (b.coords) { const match = b.coords.value.match(/Point\(([-\d.]+) ([-\d.]+)\)/); if (match) conflict.coords = [parseFloat(match[2]), parseFloat(match[1])]; }
-                        conflict.status = determineStatus(conflict.startDate, conflict.endDate);
-                        conflict.sector = getConflictSector(conflict);
-                        uniqueConflicts.set(id, conflict);
-                    }
-                });
-                allConflicts = Array.from(uniqueConflicts.values());
-                displayData(allConflicts);
-                updateStats(allConflicts);
-                populateFilters(allConflicts);
-            }
-            
-            // --- FUNCIONES DE UI Y AUXILIARES ---
-            function closeDetailsPanel() {
-                detailsPanel.classList.remove('active');
-                statsPanelWrapper.style.display = 'block';
-            }
-
-            async function showConflictDetails(conflict) {
-                statsPanelWrapper.style.display = 'none';
-                const status = statusInfo[conflict.status] || statusInfo['Desconocido'];
-                detailsPanel.innerHTML = `
-                    <div class="details-header">
-                        <button class="close-btn" id="close-details-dynamic">&times;</button>
-                        <h2 id="conflict-name-text">${conflict.name}</h2>
-                        <div id="conflict-sector-wrapper">
-                            <span id="conflict-sector" style="background-color: ${sectorColors[conflict.sector] || '#607d8b'}; color: white;">${conflict.sector}</span>
+        // La plantilla HTML de la aplicación completa
+        const AppTemplate = `
+            <div :class="['tutorial-overlay', { active: isTutorialActive }]">
+                <div v-if="isTutorialActive">
+                    <div class="tutorial-highlight-box" :style="tutorialHighlightStyle"></div>
+                    <div class="tutorial-popup" :style="tutorialPopupStyle">
+                        <h3><i class="fas fa-route"></i> {{ currentTutorialStep.title }}</h3>
+                        <p>{{ currentTutorialStep.text }}</p>
+                        <div class="tutorial-nav">
+                            <div class="tutorial-dots">
+                                <span v-for="(step, index) in tutorialSteps" :key="index" class="dot" :class="{ active: index === tutorialStep }"></span>
+                            </div>
+                            <div>
+                                <button @click="prevStep" :disabled="tutorialStep === 0">Anterior</button>
+                                <button @click="nextStep" v-if="tutorialStep < tutorialSteps.length - 1">Siguiente</button>
+                                <button @click="finishTutorial" v-else>Finalizar</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="details-body">
-                        <div class="details-status-banner status-${conflict.status}">
-                            <i class="fas ${status.icon} icon"></i>
-                            <span>${status.text}</span>
+                </div>
+            </div>
+
+            <div :class="['welcome-modal-overlay', { active: showWelcomeModal }]">
+                <div class="welcome-modal">
+                    <div class="icon">🗺️</div>
+                    <h2>Exploración Iniciada</h2>
+                    <p>¡Todo listo! Ya puedes navegar, filtrar y descubrir los conflictos socioambientales. ¡Que tu curiosidad sea tu guía!</p>
+                    <button @click="closeWelcomeModal">Comenzar a Explorar</button>
+                </div>
+            </div>
+
+            <header class="header">
+                <div class="logo-container">
+                    <img src="/logo.png" alt="Logo Wikimedia Chile">
+                </div>
+                <div class="title-group">
+                    <h1 class="logo-title">GeoConflictos</h1>
+                    <p class="logo-subtitle">Mapa de conflictos socioambientales</p>
+                </div>
+            </header>
+
+            <div class="main-container">
+                <div class="map-and-panels-wrapper">
+                    <div id="filters-panel" class="filters-panel">
+                        <h2><i class="fas fa-filter"></i> Filtros</h2>
+                        <div class="filter-group">
+                            <label for="country-filter">País</label>
+                             <div class="custom-select-container" ref="countrySelectContainer">
+                                 <div class="custom-select-display" @click="isCountryDropdownOpen = !isCountryDropdownOpen" :class="{ open: isCountryDropdownOpen }">
+                                     <span v-if="filters.country.length === 0" class="placeholder-text">Seleccionar países...</span>
+                                     <div v-for="countryId in filters.country" :key="countryId" class="country-tag">
+                                         <span>{{ getCountryName(countryId) }}</span>
+                                         <span class="remove-tag" @click.stop="removeCountry(countryId)">&times;</span>
+                                     </div>
+                                 </div>
+                                 <div class="country-dropdown" v-show="isCountryDropdownOpen">
+                                     <input type="text" class="country-search" v-model="countrySearchTerm" placeholder="Buscar país...">
+                                     <div class="country-list-actions">
+                                        <button @click.stop="toggleSelectAllCountries">{{ selectAllButtonText }}</button>
+                                     </div>
+                                     <div class="country-list">
+                                         <label v-for="country in filteredCountries" :key="country.id" class="country-list-item">
+                                             <input type="checkbox" :value="country.id" v-model="filters.country">
+                                             {{ country.name }}
+                                         </label>
+                                     </div>
+                                 </div>
+                             </div>
                         </div>
-                        <div class="details-description" id="conflict-description-dynamic">${conflict.description}</div>
-                        <div class="details-info-grid">
-                            <div class="info-item">
+                        <div class="filter-group">
+                            <button class="load-button" @click="onCountryChange">Ver Conflictos</button>
+                        </div>
+                        <div class="filter-group">
+                            <label for="search">Buscar por nombre</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="search" placeholder="Ej: Pascua Lama..." v-model="filters.search">
+                                <i class="fas fa-search icon"></i>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="region-filter">Región</label>
+                            <div class="input-wrapper">
+                                <select id="region-filter" v-model="filters.region" :disabled="filterOptions.regions.length === 0">
+                                     <option value="">Todas las regiones</option>
+                                     <option v-for="region in filterOptions.regions" :key="region" :value="region">{{ region }}</option>
+                                </select>
                                 <i class="fas fa-map-marked-alt icon"></i>
-                                <div class="content">
-                                    <label>Región</label>
-                                    <span class="value">${conflict.region}</span>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-calendar-alt icon"></i>
-                                <div class="content">
-                                    <label>Fecha de inicio</label>
-                                    <span class="value">${conflict.startDate ? new Date(conflict.startDate).toLocaleDateString() : 'Desconocido'}</span>
-                                </div>
                             </div>
                         </div>
-                        <div class="action-buttons">
-                            <button class="action-btn btn-wikidata" id="btn-wikidata-dynamic"><i class="fas fa-database"></i> Ver en Wikidata</button>
-                            <button class="action-btn btn-wikipedia" id="btn-wikipedia-dynamic"><i class="fab fa-wikipedia-w"></i> Ver en Wikipedia</button>
+                        <div class="filter-group">
+                            <label for="type-filter">Sector</label>
+                            <div class="input-wrapper">
+                               <select id="type-filter" v-model="filters.sector" :disabled="filterOptions.sectors.length === 0">
+                                   <option value="">Todos los sectores</option>
+                                   <option v-for="sector in filterOptions.sectors" :key="sector" :value="sector">{{ sector }}</option>
+                               </select>
+                               <i class="fas fa-industry icon"></i>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="status-filter">Estado</label>
+                            <div class="input-wrapper">
+                                <select id="status-filter" v-model="filters.status">
+                                    <option value="">Todos los estados</option>
+                                    <option value="Activo">Activo</option>
+                                    <option value="Latente">Latente</option>
+                                    <option value="Resuelto">Resuelto</option>
+                                    <option value="Desconocido">Desconocido</option>
+                                </select>
+                                <i class="fas fa-lightbulb icon"></i>
+                            </div>
+                        </div>
+                         <div class="filter-group">
+                            <label for="date-filter">Fecha de inicio</label>
+                            <div class="input-wrapper">
+                               <input type="date" id="date-filter" v-model="filters.date">
+                               <i class="fas fa-calendar-alt icon"></i>
+                            </div>
                         </div>
                     </div>
-                `;
-                detailsPanel.classList.add('active');
-                document.getElementById('close-details-dynamic').addEventListener('click', closeDetailsPanel);
-                document.getElementById('btn-wikidata-dynamic').onclick = () => window.open(`https://www.wikidata.org/wiki/${conflict.id}`, '_blank');
-                const btnWikipedia = document.getElementById('btn-wikipedia-dynamic');
-                if (conflict.wikipediaUrl) { btnWikipedia.onclick = () => window.open(conflict.wikipediaUrl, '_blank'); } 
-                else { btnWikipedia.disabled = true; btnWikipedia.style.opacity = 0.5; }
-                const descriptionElement = document.getElementById('conflict-description-dynamic');
-                const originalDescription = conflict.description;
-                const genericDescriptions = ['conflicto socioambiental', 'conflicto ambiental', 'conflicto social', 'mina', 'protesta', 'disputa', 'huelga', 'sin descripción'];
-                if (genericDescriptions.includes(originalDescription.toLowerCase().trim()) && conflict.wikipediaUrl) {
-                    descriptionElement.innerHTML = '<i>Cargando descripción desde Wikipedia...</i>';
-                    try {
-                        const summary = await fetchWikipediaSummary(conflict.wikipediaUrl);
-                        if (summary) { descriptionElement.textContent = summary; conflict.description = summary; } 
-                        else { descriptionElement.textContent = originalDescription; }
-                    } catch (error) { console.error(error); descriptionElement.textContent = originalDescription; }
-                }
-            }
-
-            async function fetchWikipediaSummary(wikipediaUrl) {
-                if (!wikipediaUrl) return null;
-                const pageTitle = decodeURIComponent(wikipediaUrl.split('/').pop());
-                const apiUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
-                const response = await fetch(apiUrl);
-                if (!response.ok) return null;
-                const data = await response.json();
-                return data.extract || null;
-            }
-
-            function updateStats(conflicts) {
-                statsPanelContent.innerHTML = `
-                    <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card stat-total">
-                            <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
-                            <div class="stat-info"><div class="stat-value" id="total-conflicts">0</div><div class="stat-label">Total</div></div>
-                        </div>
-                        <div class="stat-card stat-active">
-                            <div class="stat-icon"><i class="fas fa-fire-alt"></i></div>
-                            <div class="stat-info"><div class="stat-value" id="active-conflicts">0</div><div class="stat-label">Activos</div></div>
-                        </div>
-                        <div class="stat-card stat-latent">
-                            <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-                            <div class="stat-info"><div class="stat-value" id="latent-conflicts">0</div><div class="stat-label">Latentes</div></div>
-                        </div>
-                        <div class="stat-card stat-resolved">
-                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                            <div class="stat-info"><div class="stat-value" id="resolved-conflicts">0</div><div class="stat-label">Resueltos</div></div>
+                    
+                    <div class="map-area" id="map-area">
+                        <div id="map-container" ref="mapContainer"></div>
+                        <div class="loading" v-if="isLoading">
+                            Consultando Wikidata...
                         </div>
                     </div>
-                    <h3><i class="fas fa-industry"></i> Distribución por Sector</h3>
-                    <div class="sector-chart" id="sector-chart-container"></div>
-                `;
-                document.getElementById("total-conflicts").textContent = conflicts.length;
-                document.getElementById("active-conflicts").textContent = conflicts.filter(c => c.status === 'Activo').length;
-                document.getElementById("latent-conflicts").textContent = conflicts.filter(c => c.status === 'Latente').length;
-                document.getElementById("resolved-conflicts").textContent = conflicts.filter(c => c.status === 'Resuelto').length;
-                const sectors = {};
-                conflicts.forEach(c => { sectors[c.sector] = (sectors[c.sector] || 0) + 1; });
-                const sectorChartContainer = document.getElementById("sector-chart-container");
-                sectorChartContainer.innerHTML = "";
-                Object.entries(sectors).sort(([, a], [, b]) => b - a).forEach(([sector, count]) => {
-                    const percentage = conflicts.length > 0 ? ((count / conflicts.length) * 100).toFixed(0) : 0;
-                    const item = document.createElement("div");
-                    item.className = "sector-item";
-                    item.innerHTML = `<div class="sector-icon-wrapper" style="background-color: ${sectorColors[sector] || '#607d8b'}"><i class="${sectorIcons[sector] || 'fas fa-question-circle'} sector-icon"></i></div><div class="sector-content"><div class="sector-label">${sector}</div><div class="sector-bar-wrapper"><div class="sector-bar-container"><div class="sector-bar" style="width: ${percentage}%; background-color: ${sectorColors[sector] || '#607d8b'};"></div></div><span class="percentage-value">${percentage}%</span></div></div>`;
-                    sectorChartContainer.appendChild(item);
-                });
-            }
+                    
+                     <div class="right-panel-wrapper" id="stats-panel">
+                         <div class="stats-panel-wrapper" v-show="!activeConflict">
+                             <div class="stats-panel">
+                                 <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+                                 <div class="stats-grid">
+                                     <div class="stat-card stat-total">
+                                         <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">Total</div></div>
+                                     </div>
+                                     <div class="stat-card stat-active">
+                                         <div class="stat-icon"><i class="fas fa-fire-alt"></i></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.active }}</div><div class="stat-label">Activos</div></div>
+                                     </div>
+                                     <div class="stat-card stat-latent">
+                                         <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.latent }}</div><div class="stat-label">Latentes</div></div>
+                                     </div>
+                                     <div class="stat-card stat-resolved">
+                                         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                         <div class="stat-info"><div class="stat-value">{{ stats.resolved }}</div><div class="stat-label">Resueltos</div></div>
+                                     </div>
+                                 </div>
+                                 <h3><i class="fas fa-industry"></i> Distribución por Sector</h3>
+                                 <div class="sector-chart">
+                                     <div class="sector-item" v-for="sector in stats.sectors" :key="sector.name">
+                                         <div class="sector-icon-wrapper" :style="{ backgroundColor: sector.color }"><i :class="sector.icon" class="sector-icon"></i></div>
+                                         <div class="sector-content">
+                                             <div class="sector-label">{{ sector.name }}</div>
+                                             <div class="sector-bar-wrapper">
+                                                 <div class="sector-bar-container">
+                                                     <div class="sector-bar" :style="{ width: sector.percentage + '%', backgroundColor: sector.color }"></div>
+                                                 </div>
+                                                 <span class="percentage-value">{{ sector.percentage }}%</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                               </div>
+                         </div>
 
-            function displayData(conflicts) {
-                markers.clearLayers();
-                const conflictsWithCoords = conflicts.filter(c => c.coords);
-                conflictsWithCoords.forEach(conflict => {
-                    const markerColor = sectorColors[conflict.sector] || '#607d8b';
-                    const icon = L.divIcon({ className: 'custom-marker', html: `<div style="background-color: ${markerColor}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.6);"></div>`, iconSize:[24,24], iconAnchor:[12,12] });
-                    const marker = L.marker(conflict.coords, { icon: icon }).addTo(markers);
-                    marker.bindPopup(`<strong>${conflict.name}</strong><br><em>${conflict.sector}</em>`);
-                    marker.on("click", () => showConflictDetails(conflict));
-                });
-                if (markers.getLayers().length > 0) { 
-                    map.invalidateSize(); 
-                    if (countryFilter.value === QID_CHILE) {
-                        map.setView([-35.6751, -71.543], 5);
-                    } else {
-                        map.fitBounds(markers.getBounds(), { padding: [50, 50] }); 
-                    }
-                } else {
-                    map.setView([20, 10], 2);
-                }
-            }
-
-            function populateCountryFilter(countries) {
-                countryFilter.innerHTML = '';
-                countries.sort((a,b) => a.name.localeCompare(b.name)).forEach(country => {
-                    const option = document.createElement('option');
-                    option.value = country.id;
-                    option.textContent = country.name;
-                    countryFilter.appendChild(option);
-                });
-            }
-
-            function populateFilters(conflicts) {
-                const regionFilter = document.getElementById('region-filter');
-                const typeFilter = document.getElementById('type-filter');
-                const regionSet = new Set(conflicts.map(c => c.region).filter(r => r && r !== 'No especificada'));
-                const sectorSet = new Set(conflicts.map(c => c.sector).filter(Boolean));
-                regionFilter.innerHTML = '<option value="">Todas las regiones</option>';
-                Array.from(regionSet).sort().forEach(r => { regionFilter.innerHTML += `<option value="${r}">${r}</option>`; });
-                typeFilter.innerHTML = '<option value="">Todos los sectores</option>';
-                Array.from(sectorSet).sort().forEach(s => { typeFilter.innerHTML += `<option value="${s}">${s}</option>`; });
-            }
+                         <div class="details-panel" :class="{ active: activeConflict }">
+                             <div v-if="activeConflict">
+                                 <div class="details-header">
+                                     <button class="close-btn" @click="activeConflict = null">&times;</button>
+                                     <h2>{{ activeConflict.name }}</h2>
+                                     <div>
+                                         <span :style="{ backgroundColor: getSectorColor(activeConflict.sector) }">{{ activeConflict.sector }}</span>
+                                     </div>
+                                 </div>
+                                 <div class="details-body">
+                                     <div :class="['details-status-banner', 'status-' + activeConflict.status]">
+                                         <i :class="['fas', getStatusInfo(activeConflict.status).icon, 'icon']"></i>
+                                         <span>{{ getStatusInfo(activeConflict.status).text }}</span>
+                                     </div>
+                                     <div class="details-description" v-html="activeConflict.description"></div>
+                                     <div class="details-info-grid">
+                                         <div class="info-item">
+                                             <i class="fas fa-map-marked-alt icon"></i>
+                                             <div class="content">
+                                                 <label>Ubicación</label>
+                                                 <span class="value">{{ activeConflict.region }} <span v-if="activeConflict.isImprecise">(aprox.)</span></span>
+                                             </div>
+                                         </div>
+                                         <div class="info-item">
+                                             <i class="fas fa-calendar-alt icon"></i>
+                                             <div class="content">
+                                                 <label>Fecha de inicio</label>
+                                                 <span class="value">{{ formatDate(activeConflict.startDate) }}</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="action-buttons">
+                                         <button class="action-btn btn-wikidata" @click="openLink('https://www.wikidata.org/wiki/' + activeConflict.id)"><i class="fas fa-database"></i> Ver en Wikidata</button>
+                                         <button v-if="activeConflict.wikipediaUrl" class="action-btn btn-wikipedia" @click="openLink(activeConflict.wikipediaUrl)"><i class="fab fa-wikipedia-w"></i> Ver en Wikipedia</button>
+                                     </div>
+                                 </div>
+                               </div>
+                         </div>
+                       </div>
+                </div>
+            </div>
             
-            function filterData() {
-                const regionVal = document.getElementById('region-filter').value;
-                const typeVal = document.getElementById('type-filter').value;
-                const statusVal = document.getElementById('status-filter').value;
-                const searchVal = document.getElementById('search').value.toLowerCase();
-                const dateVal = document.getElementById('date-filter').value;
+            <footer>
+                <div class="footer-container">
+                    <div class="footer-logos">
+                        <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="/wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
+                        <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="/wikidata logo.png" alt="Logo Wikidata"></a>
+                    </div>
+                    <p class="footer-text">Desarrollado con datos de Wikidata, un proyecto de la Fundación Wikimedia.</p>
+                    <p class="footer-copyright">© {{ new Date().getFullYear() }} Wikimedia Chile. Contenido disponible bajo licencia CC BY-SA 4.0.</p>
+                </div>
+            </footer>
+        `;
+
+        createApp({
+            template: AppTemplate,
+            setup() {
+                // --- DEFINICIONES Y CONSTANTES ---
+                const QID_CHILE = "Q298";
+                const sectorKeywords = { 'Minero': ["minero", "minera", "mina", "pascua lama", "casale", "collahuasi", "codelco", "cobre", "litio"], 'Agua': ["agua", "hídrico", "represa", "río", "lago", "hidroeléctrica", "hidroaysén", "escasez", "glaciar", "sequía", "embalse", "mar", "océano", "costa", "puerto"], 'Forestal': ["forestal", "celulosa", "arauco", "cmpc", "bosque", "árbol", "plantación"], 'Industrial': ["industrial", "contaminación", "quintero", "refinería", "plomo", "pesquero", "salmonera", "derrame", "empresa"], 'Energético': ["energético", "termoeléctrica", "central", "carbón", "eólico", "eléctrica", "solar", "gas", "petróleo"], 'Protesta Social': ["protesta", "social", "estallido", "huelga", "disputa", "movilización", "comunidad", "vecinos", "mapuche"] };
+                const sectorColors = { 'Minero': "#ff9800", 'Agua': "#2196f3", 'Forestal': "#4caf50", 'Industrial': "#f44336", 'Energético': "#9c27b0", 'Protesta Social': "#e91e63", 'Otro': "#607d8b" };
+                const sectorIcons = { 'Minero': "fas fa-mountain", 'Agua': "fas fa-water", 'Forestal': "fas fa-tree", 'Industrial': "fas fa-industry", 'Energético': "fas fa-bolt", 'Protesta Social': "fas fa-users", 'Otro': "fas fa-question-circle" };
+                const statusInfo = { 'Activo': { icon: 'fa-fire-alt', text: 'Conflicto Activo' }, 'Latente': { icon: 'fa-hourglass-half', text: 'Conflicto Latente' }, 'Resuelto': { icon: 'fa-check-circle', text: 'Conflicto Resuelto' }, 'Desconocido': { icon: 'fa-question-circle', text: 'Estado Desconocido' } };
+
+                // --- ESTADO REACTIVO DE LA APLICACIÓN ---
+                const isLoading = ref(false);
+                const countries = ref([]);
+                const allConflicts = ref([]);
+                const activeConflict = ref(null);
+                const filters = reactive({ country: [QID_CHILE], search: '', region: '', sector: '', status: '', date: '' });
+                const isCountryDropdownOpen = ref(false);
+                const countrySearchTerm = ref('');
+                const countrySelectContainer = ref(null);
+                const isTutorialActive = ref(false);
+                const tutorialStep = ref(0);
+                const showWelcomeModal = ref(false);
+                const tutorialSteps = [
+                    { element: '#filters-panel', title: 'Panel de Filtros', text: 'Aquí puedes filtrar los conflictos por país, nombre, sector y más. Selecciona uno o varios países y presiona "Ver Conflictos" para empezar.' },
+                    { element: '#map-area', title: 'Mapa Interactivo', text: 'Los conflictos aparecerán aquí. Los puntos con borde discontinuo indican una ubicación aproximada. Haz clic en un punto para ver más detalles.' },
+                    { element: '#stats-panel', title: 'Estadísticas y Detalles', text: 'Este panel muestra un resumen de los conflictos visualizados. Al seleccionar un conflicto en el mapa, aquí verás su información detallada.' }
+                ];
+                const tutorialPopupStyle = ref({});
+                const tutorialHighlightStyle = ref({});
+                let map = null;
+                let markers = null;
+                const mapContainer = ref(null);
+
+                // --- PROPIEDADES COMPUTADAS ---
+                const filteredConflicts = computed(() => {
+                    if (allConflicts.value.length === 0) return [];
+                    return allConflicts.value.filter(c => 
+                        (!filters.region || `${c.countryName} - ${c.region}` === filters.region) &&
+                        (!filters.sector || c.sector === filters.sector) &&
+                        (!filters.status || c.status === filters.status) &&
+                        (!filters.date || (c.startDate && new Date(c.startDate) >= new Date(filters.date))) &&
+                        (!filters.search || c.name.toLowerCase().includes(filters.search.toLowerCase()))
+                    );
+                });
+
+                const stats = computed(() => {
+                    const data = filteredConflicts.value;
+                    const sectorsMap = {};
+                    data.forEach(c => { sectorsMap[c.sector] = (sectorsMap[c.sector] || 0) + 1; });
+                    
+                    const sortedSectors = Object.entries(sectorsMap).sort(([, a], [, b]) => b - a).map(([name, count]) => ({
+                        name,
+                        count,
+                        percentage: data.length > 0 ? Math.round((count / data.length) * 100) : 0,
+                        color: sectorColors[name] || '#607d8b',
+                        icon: sectorIcons[name] || 'fas fa-question-circle'
+                    }));
+
+                    return {
+                        total: data.length,
+                        active: data.filter(c => c.status === 'Activo').length,
+                        latent: data.filter(c => c.status === 'Latente').length,
+                        resolved: data.filter(c => c.status === 'Resuelto').length,
+                        sectors: sortedSectors
+                    };
+                });
+
+                const filterOptions = computed(() => {
+                    const regions = [...new Set(allConflicts.value.filter(c => c.region && c.region !== 'No especificada' && c.countryName).map(c => `${c.countryName} - ${c.region}`))].sort();
+                    const sectors = [...new Set(allConflicts.value.map(c => c.sector).filter(Boolean))].sort();
+                    return { regions, sectors };
+                });
+
+                const filteredCountries = computed(() => {
+                    if (!countrySearchTerm.value) return countries.value;
+                    return countries.value.filter(c => c.name.toLowerCase().includes(countrySearchTerm.value.toLowerCase()));
+                });
                 
-                const filtered = allConflicts.filter(c => 
-                    (!regionVal || c.region === regionVal) && 
-                    (!typeVal || c.sector === typeVal) && 
-                    (!statusVal || c.status === statusVal) && 
-                    (!dateVal || (c.startDate && new Date(c.startDate) >= new Date(dateVal))) &&
-                    (!searchVal || c.name.toLowerCase().includes(searchVal) || c.description.toLowerCase().includes(searchVal))
-                );
+                const currentTutorialStep = computed(() => tutorialSteps[tutorialStep.value]);
+
+                const selectAllButtonText = computed(() => {
+                    if (countries.value.length === 0) return 'Seleccionar todos';
+                    return filters.country.length === countries.value.length ? 'Deseleccionar todos' : 'Seleccionar todos';
+                });
+
+                // --- MÉTODOS ---
+                const fetchData = async (countryQIDs) => {
+                    if (!countryQIDs || countryQIDs.length === 0) {
+                        allConflicts.value = [];
+                        return;
+                    }
+                    isLoading.value = true;
+                    activeConflict.value = null;
+                    const countriesFilter = `VALUES ?country { ${countryQIDs.map(id => `wd:${id}`).join(' ')} }`;
+                    const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?adminEntity ?adminEntityLabel ?wikipediaUrl ?countryLabel WHERE { ${countriesFilter} ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131 ?adminEntity. } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "es"; schema:isPartOf <https://es.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". ?conflict rdfs:label ?conflictLabel; schema:description ?description. ?adminEntity rdfs:label ?adminEntityLabel. ?country rdfs:label ?countryLabel. } }`;
+                    const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
+                    try {
+                        const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                        if (!response.ok) throw new Error(`Error de red: ${response.status}`);
+                        const data = await response.json();
+                        await processData(data);
+                    } catch (error) {
+                        console.error("Error fetching conflicts:", error);
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                const processData = async (data) => {
+                    const uniqueConflicts = new Map();
+                     data.results.bindings.forEach(b => {
+                         const id = b.conflict.value.split('/').pop();
+                         if (!uniqueConflicts.has(id)) {
+                             const conflict = { id, name: b.conflictLabel?.value || 'Sin nombre', description: b.description?.value || 'Sin descripción', startDate: b.startDate?.value, endDate: b.endDate?.value, region: b.adminEntityLabel?.value || 'No especificada', adminEntityId: b.adminEntity?.value.split('/').pop(), coords: null, isImprecise: false, wikipediaUrl: b.wikipediaUrl?.value, countryName: b.countryLabel?.value };
+                             if (b.coords) { const match = b.coords.value.match(/Point\(([-\d.]+) ([-\d.]+)\)/); if (match) conflict.coords = [parseFloat(match[2]), parseFloat(match[1])]; }
+                             conflict.status = determineStatus(conflict.startDate, conflict.endDate);
+                             conflict.sector = getConflictSector(conflict);
+                             uniqueConflicts.set(id, conflict);
+                         }
+                     });
+                    const processedConflicts = Array.from(uniqueConflicts.values());
+
+                    const conflictsToGeocode = processedConflicts.filter(c => !c.coords && c.adminEntityId);
+                    if (conflictsToGeocode.length > 0) {
+                        const adminCoordsMap = await geocodeAdminEntities(conflictsToGeocode);
+                        processedConflicts.forEach(conflict => {
+                            if (!conflict.coords && conflict.adminEntityId && adminCoordsMap.has(conflict.adminEntityId)) {
+                                conflict.coords = adminCoordsMap.get(conflict.adminEntityId);
+                                conflict.isImprecise = true;
+                            }
+                        });
+                    }
+                    allConflicts.value = processedConflicts;
+                };
+
+                const geocodeAdminEntities = async (conflicts) => {
+                    const adminIds = [...new Set(conflicts.map(c => c.adminEntityId))];
+                    if (adminIds.length === 0) return new Map();
+                    const sparqlQuery = `SELECT ?entity ?coords WHERE { VALUES ?entity { ${adminIds.map(id => `wd:${id}`).join(' ')} } ?entity wdt:P625 ?coords. }`;
+                    const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
+                    const adminCoordsMap = new Map();
+                    try {
+                        const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                        if (!response.ok) return adminCoordsMap;
+                        const data = await response.json();
+                        data.results.bindings.forEach(b => {
+                            const entityId = b.entity.value.split('/').pop();
+                            const match = b.coords.value.match(/Point\(([-\d.]+) ([-\d.]+)\)/);
+                            if(match) adminCoordsMap.set(entityId, [parseFloat(match[2]), parseFloat(match[1])]);
+                        });
+                    } catch (error) { console.error("Error geocoding:", error); }
+                    return adminCoordsMap;
+                };
+
+                const onCountryChange = () => fetchData(filters.country);
                 
-                displayData(filtered);
-                updateStats(filtered);
+                const showConflictDetails = async (conflict) => {
+                    activeConflict.value = conflict;
+                    if (['conflicto socioambiental', 'conflicto ambiental', 'sin descripción'].includes(conflict.description.toLowerCase().trim()) && conflict.wikipediaUrl) {
+                        const summary = await fetchWikipediaSummary(conflict.wikipediaUrl);
+                        if (summary && activeConflict.value?.id === conflict.id) {
+                            activeConflict.value.description = summary;
+                        }
+                    }
+                };
+
+                const fetchWikipediaSummary = async (wikipediaUrl) => {
+                    if (!wikipediaUrl) return null;
+                    try {
+                        const pageTitle = decodeURIComponent(wikipediaUrl.split('/').pop());
+                        const apiUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
+                        const response = await fetch(apiUrl);
+                        if (!response.ok) return null;
+                        const data = await response.json();
+                        return data.extract || null;
+                    } catch { return null; }
+                };
+                const determineStatus = (startDateStr, endDateStr) => { const now = new Date(); if (endDateStr && new Date(endDateStr) < now) return 'Resuelto'; if (startDateStr) return new Date(startDateStr) < new Date(new Date().setFullYear(new Date().getFullYear() - 15)) ? 'Latente' : 'Activo'; return 'Desconocido'; };
+                const getConflictSector = (conflict) => { const textToSearch = `${conflict.name.toLowerCase()} ${conflict.description.toLowerCase()}`; for (const [sector, keywords] of Object.entries(sectorKeywords)) { if (keywords.some(k => textToSearch.includes(k))) return sector; } return 'Otro'; };
+                
+                const getSectorColor = (sector) => sectorColors[sector] || '#607d8b';
+                const getStatusInfo = (status) => statusInfo[status] || statusInfo['Desconocido'];
+                const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'Desconocido';
+                const openLink = (url) => { if(url) window.open(url, '_blank'); };
+
+                const getCountryName = (id) => countries.value.find(c => c.id === id)?.name || id;
+                const removeCountry = (id) => { filters.country = filters.country.filter(cId => cId !== id); };
+                
+                const toggleSelectAllCountries = () => {
+                    if (filters.country.length === countries.value.length) {
+                        filters.country = [];
+                    } else {
+                        filters.country = countries.value.map(c => c.id);
+                    }
+                };
+
+                const nextStep = () => { if (tutorialStep.value < tutorialSteps.length - 1) tutorialStep.value++; };
+                const prevStep = () => { if (tutorialStep.value > 0) tutorialStep.value--; };
+                const finishTutorial = () => {
+                    isTutorialActive.value = false;
+                    showWelcomeModal.value = true;
+                    localStorage.setItem('geoConflictosTutorialSeen', 'true');
+                };
+                const closeWelcomeModal = () => {
+                    showWelcomeModal.value = false;
+                };
+
+                const updateTutorialHighlight = () => {
+                    if (!isTutorialActive.value) return;
+                    const step = currentTutorialStep.value;
+                    const targetElement = document.querySelector(step.element);
+                    if (!targetElement) return;
+
+                    const rect = targetElement.getBoundingClientRect();
+                    const padding = 10;
+                    
+                    tutorialHighlightStyle.value = {
+                        top: `${rect.top - padding}px`,
+                        left: `${rect.left - padding}px`,
+                        width: `${rect.width + (padding * 2)}px`,
+                        height: `${rect.height + (padding * 2)}px`,
+                    };
+
+                    tutorialPopupStyle.value = {
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                    };
+                };
+                
+                const handleClickOutside = (event) => {
+                    if (countrySelectContainer.value && !countrySelectContainer.value.contains(event.target)) {
+                        isCountryDropdownOpen.value = false;
+                    }
+                };
+                
+                const handleResize = () => {
+                    if (isTutorialActive.value) {
+                        updateTutorialHighlight();
+                    }
+                };
+
+                onMounted(async () => {
+                    map = L.map(mapContainer.value).setView([-40, -71], 4);
+                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                    markers = L.featureGroup().addTo(map);
+
+                    const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } } ORDER BY ?countryLabel`;
+                    const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
+                    try {
+                        const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                        const data = await response.json();
+                        countries.value = data.results.bindings.map(b => ({ id: b.country.value.split('/').pop(), name: b.countryLabel.value })).filter(c => c.name);
+                        await fetchData(filters.country);
+                    } catch (error) {
+                         console.error("Error fetching countries:", error);
+                    }
+                    
+                    document.addEventListener('click', handleClickOutside);
+                    window.addEventListener('resize', handleResize);
+
+                    if (localStorage.getItem('geoConflictosTutorialSeen') !== 'true') {
+                        setTimeout(() => {
+                            isTutorialActive.value = true;
+                        }, 500);
+                    }
+                });
+                
+                onBeforeUnmount(() => {
+                    document.removeEventListener('click', handleClickOutside);
+                    window.removeEventListener('resize', handleResize);
+                });
+
+                watch(isTutorialActive, (isActive) => {
+                    document.documentElement.classList.toggle('tutorial-active', isActive);
+                    document.body.classList.toggle('tutorial-active', isActive);
+                    if (isActive) {
+                        nextTick(() => {
+                            updateTutorialHighlight();
+                        });
+                    }
+                });
+                watch(tutorialStep, updateTutorialHighlight);
+
+                watch(filteredConflicts, (newConflicts) => {
+                    if (!map || !markers) return;
+                    markers.clearLayers();
+                    const conflictsWithCoords = newConflicts.filter(c => c.coords);
+
+                    conflictsWithCoords.forEach(conflict => {
+                        let markerStyle = `background-color: ${getSectorColor(conflict.sector)}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.6);`;
+                        if (conflict.isImprecise) {
+                            markerStyle += ` border-style: dashed; opacity: 0.8;`;
+                        }
+                        const icon = L.divIcon({ className: 'custom-marker', html: `<div style="${markerStyle}"></div>`, iconSize:[24,24], iconAnchor:[12,12] });
+                        
+                        L.marker(conflict.coords, { icon: icon })
+                            .addTo(markers)
+                            .bindPopup(`<strong>${conflict.name}</strong><br><em>${conflict.sector}</em>`)
+                            .on("click", () => showConflictDetails(conflict));
+                    });
+
+                    if (markers.getLayers().length > 0) {
+                        map.invalidateSize();
+                        if (filters.country.length === 1 && filters.country[0] === QID_CHILE) {
+                             map.setView([-35.6751, -71.543], 5);
+                        } else {
+                             map.fitBounds(markers.getBounds(), { padding: [50, 50] });
+                        }
+                    } else {
+                        map.setView([20,10], 2);
+                    }
+                });
+
+                return {
+                    isLoading, countries, filters, filteredConflicts, stats, filterOptions, activeConflict, mapContainer, onCountryChange, getSectorColor, getStatusInfo, formatDate, openLink, isCountryDropdownOpen, countrySearchTerm, filteredCountries, getCountryName, removeCountry, countrySelectContainer, isTutorialActive, tutorialStep, tutorialSteps, currentTutorialStep, nextStep, prevStep, finishTutorial, tutorialPopupStyle, tutorialHighlightStyle, showWelcomeModal, closeWelcomeModal, toggleSelectAllCountries, selectAllButtonText
+                };
             }
-
-            function showLoading(isLoading) {
-                let loadingEl = document.getElementById('loading-indicator');
-                if (isLoading && !loadingEl) {
-                    loadingEl = document.createElement('div');
-                    loadingEl.id = 'loading-indicator';
-                    loadingEl.className = 'loading';
-                    loadingEl.textContent = 'Consultando Wikidata... ';
-                    document.querySelector('.map-area').appendChild(loadingEl);
-                } else if (!isLoading && loadingEl) { loadingEl.remove(); }
-            }
-
-            function showError(message) {
-                let errorDiv = document.querySelector('.message');
-                if (!errorDiv) { errorDiv = document.createElement('div'); errorDiv.className = 'message'; document.querySelector('.map-area').appendChild(errorDiv); }
-                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-                setTimeout(() => { if(errorDiv) errorDiv.remove() }, 5000);
-            }
-
-            function determineStatus(startDateStr, endDateStr) {
-                const now = new Date();
-                if (endDateStr && new Date(endDateStr) < now) return 'Resuelto';
-                if (startDateStr) return new Date(startDateStr) < new Date(now.getFullYear() - 15, now.getMonth(), now.getDate()) ? 'Latente' : 'Activo';
-                return 'Desconocido';
-            }
-
-            function getConflictSector(conflict) {
-                const textToSearch = `${conflict.name.toLowerCase()} ${conflict.description.toLowerCase()}`;
-                for (const [sector, keywords] of Object.entries(sectorKeywords)) { if (keywords.some(k => textToSearch.includes(k))) return sector; }
-                return 'Otro';
-            }
-
-            // --- EVENT LISTENERS ---
-            countryFilter.addEventListener('change', function() {
-                const selectedCountry = this.value;
-                if (selectedCountry) {
-                    fetchData(selectedCountry);
-                }
-            });
-
-            otherFilters.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('input', filterData);
-            });
-
-            // --- CARGA INICIAL ---
-            initializeApp();
-        });
+        }).mount('#app');
     </script>
 </body>
 </html>
