@@ -13,15 +13,15 @@
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #3366cc;
-            --primary-dark: #2a52a2;
-            --primary-light: #eaf3ff;
-            --accent: #e63946;
+            --action-color: #202122;
+            --action-color-dark: #000000;
+            --action-color-light: #e2e8f0;
             --bg-primary: #f8f9fa;
             --bg-secondary: #ffffff;
             --text-primary: #202122;
             --text-secondary: #54595d;
             --border-color: #dee2e6;
+            --accent: #e63946;
             --green: #00af89;
             --orange: #f58d00;
             --commons-blue: #00599c;
@@ -32,15 +32,15 @@
         }
 
         :root[data-theme="dark"] {
-            --primary: #4299e1;
-            --primary-dark: #2b6cb0;
-            --primary-light: #2c5282;
-            --accent: #f56565;
+            --action-color: #e2e8f0;
+            --action-color-dark: #ffffff;
+            --action-color-light: #4a5568;
             --bg-primary: #1a202c;
             --bg-secondary: #2d3748;
             --text-primary: #e2e8f0;
             --text-secondary: #a0aec0;
             --border-color: #4a5568;
+            --accent: #f56565;
             --green: #48bb78;
             --orange: #ed8936;
             --commons-blue: #3a82c4;
@@ -74,10 +74,8 @@
         .header-right { display: flex; align-items: center; gap: 1rem; }
         
         .lang-switcher { position: relative; }
-        .lang-switcher-btn { background: var(--primary-light); color: var(--primary-dark); border: none; padding: 0.6rem 1rem; border-radius: 50px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s; }
-        html[data-theme="dark"] .lang-switcher-btn { color: var(--primary); background: var(--bg-primary); }
-        .lang-switcher-btn:hover { background-color: #d8e6ff; }
-        html[data-theme="dark"] .lang-switcher-btn:hover { background-color: #4a5568; }
+        .lang-switcher-btn { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 50px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s; }
+        .lang-switcher-btn:hover { background-color: var(--border-color); }
         .lang-dropdown { position: absolute; top: 110%; right: 0; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); list-style: none; padding: 0.5rem; z-index: 1005; min-width: 150px; }
         .lang-dropdown li { padding: 0.7rem 1rem; cursor: pointer; border-radius: 0.25rem; font-weight: 500; }
         .lang-dropdown li:hover { background-color: var(--bg-primary); }
@@ -103,7 +101,7 @@
 
         .map-and-panels-wrapper { display: flex; flex-grow: 1; gap: var(--space-lg); min-height: 600px; margin-top: 1rem; }
         .filters-panel { width: 280px; background-color: var(--bg-secondary); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s; }
-        .filters-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        .filters-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--action-color); display: flex; align-items: center; gap: 0.5rem; }
         
         .filter-group { margin-bottom: var(--space-md); }
         .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
@@ -116,25 +114,22 @@
             background-position: right 0.7rem center;
             background-size: 1.2rem;
         }
-        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: var(--primary); background-color: var(--bg-secondary); }
-        .input-wrapper input:focus + .icon, .input-wrapper select:focus + .icon { color: var(--primary); }
-        .load-button { width: 100%; padding: 0.8rem; border: none; background-color: var(--primary); color: white; font-weight: 600; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
-        .load-button:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: var(--action-color); background-color: var(--bg-secondary); }
+        .input-wrapper input:focus + .icon, .input-wrapper select:focus + .icon { color: var(--action-color); }
+        .load-button { width: 100%; padding: 0.8rem; border: none; background-color: var(--action-color); color: var(--bg-secondary); font-weight: 600; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
+        .load-button:hover { background-color: var(--action-color-dark); transform: translateY(-2px); }
         
         .custom-select-container { position: relative; }
         .custom-select-display { background-color: var(--input-bg); border: 2px solid transparent; border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
-        .custom-select-display.open { border-color: var(--primary); }
-        .country-tag { background-color: var(--primary-light); color: var(--primary-dark); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
-        html[data-theme="dark"] .country-tag { color: var(--primary); }
+        .custom-select-display.open { border-color: var(--action-color); }
+        .country-tag { background-color: var(--action-color-light); color: var(--action-color); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
         .country-tag .remove-tag { cursor: pointer; font-weight: bold; }
         .placeholder-text { color: var(--text-secondary); padding-left: 0.3rem; }
         .country-dropdown { position: absolute; top: 105%; left: 0; width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1002; padding: 0.5rem; }
         .country-search { width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: 0.25rem; margin-bottom: 0.5rem; background-color: var(--bg-primary); color: var(--text-primary); }
         .country-list-actions { padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
-        .country-list-actions button { width: 100%; padding: 0.5rem; border: none; background-color: var(--primary-light); color: var(--primary-dark); font-weight: 600; border-radius: 0.25rem; cursor: pointer; transition: background-color 0.2s; }
-        html[data-theme="dark"] .country-list-actions button { color: var(--primary); }
-        .country-list-actions button:hover { background-color: #d8e6ff; }
-        html[data-theme="dark"] .country-list-actions button:hover { background-color: #4a5568; }
+        .country-list-actions button { width: 100%; padding: 0.5rem; border: none; background-color: var(--action-color-light); color: var(--action-color); font-weight: 600; border-radius: 0.25rem; cursor: pointer; transition: background-color 0.2s; }
+        .country-list-actions button:hover { background-color: var(--border-color); }
         .country-list { max-height: 200px; overflow-y: auto; }
         .country-list-item { display: flex; align-items: center; padding: 0.6rem 0.5rem; cursor: pointer; border-radius: 0.25rem; }
         .country-list-item:hover { background-color: var(--bg-primary); }
@@ -163,8 +158,8 @@
         }
         .details-header {
             padding: 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--action-color) 0%, var(--action-color-dark) 100%);
+            color: var(--bg-secondary);
             position: relative;
             flex-shrink: 0;
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
@@ -191,13 +186,19 @@
              font-weight: 600;
              text-transform: uppercase;
              margin-top: 0.75rem;
-             color: white;
+             color: var(--bg-secondary);
              background-color: rgba(255,255,255,0.15);
              border: 1px solid rgba(255, 255, 255, 0.3);
         }
+        [data-theme="dark"] .details-header .sector-tag {
+            background-color: rgba(0,0,0,0.15);
+            border-color: rgba(0,0,0,0.3);
+        }
 
         .close-btn { position: absolute; top: 0.8rem; right: 0.8rem; background: none; border: none; font-size: 1.8rem; color: rgba(255,255,255,0.8); cursor: pointer; line-height: 1; transition: color 0.2s; z-index: 5; }
+        [data-theme="dark"] .close-btn { color: rgba(0,0,0,0.7); }
         .close-btn:hover { color: white; }
+        [data-theme="dark"] .close-btn:hover { color: black; }
         .details-body { padding: var(--space-md); overflow-y: auto; flex: 1; }
         
         .details-footer {
@@ -212,12 +213,12 @@
         }
 
         .action-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
-        .btn-wikidata { background-color: var(--primary); color: white; }
+        .btn-wikidata { background-color: var(--action-color); color: var(--bg-secondary); }
         .btn-wikipedia { background-color: var(--green); color: white; }
         .btn-commons { background-color: var(--commons-blue); color: white; }
         .action-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .stats-panel-wrapper { width: 100%; height: 100%; background-color: var(--bg-secondary); border-radius: 0.75rem; padding: var(--space-md); overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s;}
-        .stats-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        .stats-panel h2 { font-size: 1.1rem; margin-bottom: var(--space-md); color: var(--action-color); display: flex; align-items: center; gap: 0.5rem; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); }
         .stat-card { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background-color: var(--bg-secondary); border-radius: 0.5rem; border-left: 4px solid; }
@@ -225,8 +226,8 @@
         .stat-info { display: flex; flex-direction: column; align-items: flex-start; }
         .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
         .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
-        .stat-total { border-color: var(--primary); }
-        .stat-total .stat-icon { background-color: var(--primary); }
+        .stat-total { border-color: var(--action-color); }
+        .stat-total .stat-icon { background-color: var(--action-color); }
         .stat-active { border-color: var(--accent); }
         .stat-active .stat-icon { background-color: var(--accent); }
         .stat-latent { border-color: var(--orange); }
@@ -260,10 +261,95 @@
         .details-description { font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); margin-bottom: var(--space-lg); border-bottom: 1px solid var(--border-color); padding-bottom: var(--space-lg); }
         .details-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
         .info-item { display: flex; align-items: flex-start; gap: var(--space-sm); }
-        .info-item .icon { font-size: 1.1rem; color: var(--primary); margin-top: 0.15rem; }
+        .info-item .icon { font-size: 1.1rem; color: var(--action-color); margin-top: 0.15rem; }
         .info-item .content label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; display: block; }
         .info-item .content .value { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); }
         
+        /* --- MODAL DE SELECCIÓN DE IDIOMA (MEJORADO) --- */
+        .lang-selection-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-primary); /* Fondo blanco/casi blanco */
+            backdrop-filter: blur(5px);
+        }
+        .lang-selection-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .lang-selection-modal {
+            background-color: var(--bg-secondary);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .lang-selection-overlay.active .lang-selection-modal {
+            transform: scale(1);
+        }
+        .lang-modal-logo {
+            width: auto;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+        .lang-selection-modal h2 {
+            font-family: 'EB Garamond', serif;
+            color: var(--text-primary); 
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        .lang-selection-modal p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .lang-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+        .lang-selection-grid button {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .lang-selection-grid button:hover {
+            background-color: var(--action-color);
+            color: var(--bg-secondary);
+            border-color: var(--action-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* --- TUTORIAL (MEJORADO) --- */
         .tutorial-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -272,6 +358,7 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
+            background-color: transparent; /* El fondo lo da el highlight-box */
         }
         .tutorial-overlay.active {
             opacity: 1;
@@ -280,41 +367,80 @@
         .tutorial-highlight-box {
             position: fixed; 
             border-radius: 0.75rem;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+            /* El shadow crea el fondo oscuro y el "agujero" */
+            box-shadow: 0 0 0 9999px rgba(26, 32, 44, 0.7), 0 0 0 3px var(--action-color);
             z-index: 10001;
-            transition: all 0.4s ease-in-out;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
         .tutorial-popup {
-            position: fixed;
             background-color: var(--bg-secondary);
-            padding: var(--space-lg);
+            padding: 1.5rem;
             border-radius: 0.75rem;
-            border-top: 4px solid var(--primary);
             box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            width: 320px;
+            width: 90%;
+            max-width: 380px;
             z-index: 10002;
-            transition: all 0.4s ease-in-out;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; /* Posición controlada por JS */
         }
         .tutorial-popup h3 { 
-            color: var(--primary); 
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--text-primary); 
             margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             font-size: 1.2rem;
         }
-        .tutorial-popup p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
-        .tutorial-nav { margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .tutorial-popup h3 .fas {
+            color: var(--action-color);
+        }
+        .tutorial-popup p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .tutorial-nav {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .tutorial-dots { display: flex; gap: 0.5rem; }
         .dot { width: 10px; height: 10px; background-color: var(--border-color); border-radius: 50%; transition: background-color 0.3s; }
-        .dot.active { background-color: var(--primary); }
-        .tutorial-nav button { background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
-        .tutorial-nav button:hover:not(:disabled) { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .tutorial-nav button:disabled { background-color: var(--text-secondary); cursor: not-allowed; }
+        .dot.active { background-color: var(--action-color); }
+        .tutorial-nav button {
+            background: transparent;
+            color: var(--action-color);
+            border: 1px solid transparent;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .tutorial-nav button.primary {
+            background: var(--action-color);
+            color: var(--bg-secondary);
+            border-color: var(--action-color);
+        }
+        .tutorial-nav button:hover:not(:disabled) {
+            background-color: var(--border-color);
+        }
+         .tutorial-nav button.primary:hover:not(:disabled) {
+            background-color: var(--action-color-dark);
+            color: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .tutorial-nav button:disabled {
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            background-color: transparent;
+        }
+
 
         .welcome-modal-overlay {
             position: fixed;
@@ -349,7 +475,7 @@
         }
         .welcome-modal .icon {
             font-size: 3.5rem;
-            color: var(--primary);
+            color: var(--action-color);
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -366,8 +492,8 @@
             margin-bottom: 2rem;
         }
         .welcome-modal button {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--action-color) 0%, var(--action-color-dark) 100%);
+            color: var(--bg-secondary);
             border: none;
             padding: 0.9rem 2rem;
             font-size: 1rem;
@@ -375,11 +501,11 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(51, 102, 204, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .welcome-modal button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(51, 102, 204, 0.5);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
         footer { background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); padding: var(--space-md) 0; flex-shrink: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s;}
@@ -390,16 +516,22 @@
         .footer-text { font-size: 0.9rem; margin-bottom: 0.5rem; }
         .footer-copyright { font-size: 0.8rem; }
         .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-secondary); position: absolute; width: 100%; background-color: rgba(0,0,0,0.5); z-index: 10; border-radius: 0.75rem; }
-        .loading::after { content: ""; width: 24px; height: 24px; border: 3px solid var(--border-color); border-top: 3px solid var(--primary); border-radius: 50%; margin-left: 12px; animation: spin 1s linear infinite; }
+        .loading::after { content: ""; width: 24px; height: 24px; border: 3px solid var(--border-color); border-top: 3px solid var(--action-color); border-radius: 50%; margin-left: 12px; animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .message { padding: var(--space-sm) var(--space-md); text-align: center; background-color: var(--primary-light); border-radius: 0.75rem; color: var(--primary); border-left: 4px solid var(--primary); position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1001; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .message { padding: var(--space-sm) var(--space-md); text-align: center; background-color: var(--action-color-light); border-radius: 0.75rem; color: var(--action-color); border-left: 4px solid var(--action-color); position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1001; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
         @media (max-width: 1200px) {
             .map-and-panels-wrapper { flex-direction: column; height: auto; min-height: unset; }
             .filters-panel, .right-panel-wrapper, .map-area { width: 100%; height: auto; }
             .map-area { height: 60vh; min-height: 450px; }
             .details-panel { position: relative; transform: none; opacity: 1; pointer-events: auto; max-height: 85vh; }
         }
-        @media (max-width: 768px) { .main-container { padding: var(--space-sm); } .header { flex-direction: column; gap: 0.5rem; text-align: center; } .header-left { justify-content: center; } .header-right { margin-top: 1rem; } }
+        @media (max-width: 768px) {
+            .main-container { padding: var(--space-sm); }
+            .header { flex-direction: column; gap: 0.5rem; text-align: center; }
+            .header-left { justify-content: center; }
+            .header-right { margin-top: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -424,245 +556,258 @@
 
         // La plantilla HTML de la aplicación completa
         const AppTemplate = `
-            <div :class="['tutorial-overlay', { active: isTutorialActive }]">
-                <div v-if="isTutorialActive">
-                    <div class="tutorial-highlight-box" :style="tutorialHighlightStyle"></div>
-                    <div class="tutorial-popup" :style="tutorialPopupStyle">
-                        <h3><i class="fas fa-route"></i> {{ currentTutorialStep.title }}</h3>
-                        <p>{{ currentTutorialStep.text }}</p>
-                        <div class="tutorial-nav">
-                            <div class="tutorial-dots">
-                                <span v-for="(step, index) in tutorialSteps" :key="index" class="dot" :class="{ active: index === tutorialStep }"></span>
-                            </div>
-                            <div>
-                                <button @click="prevStep" :disabled="tutorialStep === 0">{{ t('tutorial.previous') }}</button>
-                                <button @click="nextStep" v-if="tutorialStep < tutorialSteps.length - 1">{{ t('tutorial.next') }}</button>
-                                <button @click="finishTutorial" v-else>{{ t('tutorial.finish') }}</button>
+            <div :class="['lang-selection-overlay', { active: showLangSelectionModal }]">
+                <div class="lang-selection-modal">
+                    <img src="/logo.png" alt="GeoConflictos Logo" class="lang-modal-logo">
+                    <h2>Welcome / Bienvenido</h2>
+                    <p>Please select your language / Por favor, seleccione su idioma</p>
+                    <div class="lang-selection-grid">
+                        <button v-for="(name, code) in supportedLangs" @click="initialize_app(code)">{{ name }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!showLangSelectionModal">
+                <div :class="['tutorial-overlay', { active: isTutorialActive }]">
+                    <div v-if="isTutorialActive">
+                        <div class="tutorial-highlight-box" :style="tutorialHighlightStyle"></div>
+                        <div class="tutorial-popup" :style="tutorialPopupStyle" ref="tutorialPopup">
+                            <h3><i :class="['fas', currentTutorialStep.icon]"></i> {{ currentTutorialStep.title }}</h3>
+                            <p>{{ currentTutorialStep.text }}</p>
+                            <div class="tutorial-nav">
+                                <div class="tutorial-dots">
+                                    <span v-for="(step, index) in tutorialSteps" :key="index" class="dot" :class="{ active: index === tutorialStep }"></span>
+                                </div>
+                                <div>
+                                    <button @click="prevStep" :disabled="tutorialStep === 0">{{ t('tutorial.previous') }}</button>
+                                    <button @click="nextStep" v-if="tutorialStep < tutorialSteps.length - 1" class="primary">{{ t('tutorial.next') }}</button>
+                                    <button @click="finishTutorial" v-else class="primary">{{ t('tutorial.finish') }}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div :class="['welcome-modal-overlay', { active: showWelcomeModal }]">
-                <div class="welcome-modal">
-                    <div class="icon">🗺️</div>
-                    <h2>{{ t('welcome.title') }}</h2>
-                    <p>{{ t('welcome.message') }}</p>
-                    <button @click="closeWelcomeModal">{{ t('welcome.button') }}</button>
+                <div :class="['welcome-modal-overlay', { active: showWelcomeModal }]">
+                    <div class="welcome-modal">
+                        <div class="icon">🗺️</div>
+                        <h2>{{ t('welcome.title') }}</h2>
+                        <p>{{ t('welcome.message') }}</p>
+                        <button @click="closeWelcomeModal">{{ t('welcome.button') }}</button>
+                    </div>
                 </div>
-            </div>
 
-            <header class="header">
-                 <div class="header-left">
-                    <div class="logo-container">
-                        <img src="/logo.png" alt="Logo Wikimedia Chile">
-                    </div>
-                    <div class="title-group">
-                        <h1 class="logo-title">{{ t('header.title') }}</h1>
-                        <p class="logo-subtitle">{{ t('header.subtitle') }}</p>
-                    </div>
-                 </div>
-                 <div class="header-right">
-                     <div class="lang-switcher" ref="langSwitcherContainer">
-                        <button @click="isLangDropdownOpen = !isLangDropdownOpen" class="lang-switcher-btn">
-                            <i class="fas fa-globe"></i>
-                            <span>{{ supportedLangs[currentLang] }}</span>
-                            <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 0.3rem;"></i>
-                        </button>
-                        <ul class="lang-dropdown" v-if="isLangDropdownOpen">
-                            <li v-for="(name, code) in supportedLangs" @click="changeLanguage(code)">{{ name }}</li>
-                        </ul>
+                <header class="header">
+                     <div class="header-left">
+                         <div class="logo-container">
+                             <img src="/logo.png" alt="Logo Wikimedia Chile">
+                         </div>
+                         <div class="title-group">
+                             <h1 class="logo-title">{{ t('header.title') }}</h1>
+                             <p class="logo-subtitle">{{ t('header.subtitle') }}</p>
+                         </div>
                      </div>
-                     <button @click="toggleTheme" class="theme-switcher-btn" :aria-label="t('theme.toggle')">
-                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
-                     </button>
-                 </div>
-            </header>
+                     <div class="header-right">
+                         <div class="lang-switcher" ref="langSwitcherContainer">
+                             <button @click="isLangDropdownOpen = !isLangDropdownOpen" class="lang-switcher-btn">
+                                 <i class="fas fa-globe"></i>
+                                 <span>{{ supportedLangs[currentLang] }}</span>
+                                 <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 0.3rem;"></i>
+                             </button>
+                             <ul class="lang-dropdown" v-if="isLangDropdownOpen">
+                                 <li v-for="(name, code) in supportedLangs" @click="changeLanguage(code)">{{ name }}</li>
+                             </ul>
+                         </div>
+                         <button @click="toggleTheme" class="theme-switcher-btn" :aria-label="t('theme.toggle')">
+                             <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                         </button>
+                     </div>
+                </header>
 
-            <div class="main-container">
-                <div class="map-and-panels-wrapper">
-                    <div id="filters-panel" class="filters-panel">
-                        <h2><i class="fas fa-filter"></i> {{ t('filters.title') }}</h2>
-                        <div class="filter-group">
-                            <label for="country-filter">{{ t('filters.country') }}</label>
-                             <div class="custom-select-container" ref="countrySelectContainer">
-                                 <div class="custom-select-display" @click="isCountryDropdownOpen = !isCountryDropdownOpen" :class="{ open: isCountryDropdownOpen }">
-                                     <span v-if="filters.country.length === 0" class="placeholder-text">{{ t('filters.selectCountries') }}</span>
-                                     <div v-for="countryId in filters.country" :key="countryId" class="country-tag">
-                                         <span>{{ getCountryName(countryId) }}</span>
-                                         <span class="remove-tag" @click.stop="removeCountry(countryId)">&times;</span>
+                <div class="main-container">
+                    <div class="map-and-panels-wrapper">
+                        <div id="filters-panel" class="filters-panel">
+                            <h2><i class="fas fa-filter"></i> {{ t('filters.title') }}</h2>
+                            <div class="filter-group">
+                                <label for="country-filter">{{ t('filters.country') }}</label>
+                                 <div class="custom-select-container" ref="countrySelectContainer">
+                                     <div class="custom-select-display" @click="isCountryDropdownOpen = !isCountryDropdownOpen" :class="{ open: isCountryDropdownOpen }">
+                                         <span v-if="filters.country.length === 0" class="placeholder-text">{{ t('filters.selectCountries') }}</span>
+                                         <div v-for="countryId in filters.country" :key="countryId" class="country-tag">
+                                             <span>{{ getCountryName(countryId) }}</span>
+                                             <span class="remove-tag" @click.stop="removeCountry(countryId)">&times;</span>
+                                         </div>
+                                     </div>
+                                     <div class="country-dropdown" v-show="isCountryDropdownOpen">
+                                         <input type="text" class="country-search" v-model="countrySearchTerm" :placeholder="t('filters.searchCountry')">
+                                         <div class="country-list-actions">
+                                             <button @click.stop="toggleSelectAllCountries">{{ selectAllButtonText }}</button>
+                                         </div>
+                                         <div class="country-list">
+                                             <label v-for="country in filteredCountries" :key="country.id" class="country-list-item">
+                                                 <input type="checkbox" :value="country.id" v-model="filters.country">
+                                                 {{ country.name }}
+                                             </label>
+                                         </div>
                                      </div>
                                  </div>
-                                 <div class="country-dropdown" v-show="isCountryDropdownOpen">
-                                     <input type="text" class="country-search" v-model="countrySearchTerm" :placeholder="t('filters.searchCountry')">
-                                     <div class="country-list-actions">
-                                        <button @click.stop="toggleSelectAllCountries">{{ selectAllButtonText }}</button>
-                                     </div>
-                                     <div class="country-list">
-                                         <label v-for="country in filteredCountries" :key="country.id" class="country-list-item">
-                                             <input type="checkbox" :value="country.id" v-model="filters.country">
-                                             {{ country.name }}
-                                         </label>
-                                     </div>
+                            </div>
+                            <div class="filter-group">
+                                <button class="load-button" @click="onCountryChange">{{ t('filters.viewConflicts') }}</button>
+                            </div>
+                            <div class="filter-group">
+                                <label for="search">{{ t('filters.searchByName') }}</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="search" :placeholder="t('filters.searchPlaceholder')" v-model="filters.search">
+                                    <i class="fas fa-search icon"></i>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label for="region-filter">{{ t('filters.region') }}</label>
+                                <div class="input-wrapper">
+                                    <select id="region-filter" v-model="filters.region" :disabled="filterOptions.regions.length === 0">
+                                        <option value="">{{ t('filters.allRegions') }}</option>
+                                        <option v-for="region in filterOptions.regions" :key="region" :value="region">{{ region }}</option>
+                                    </select>
+                                    <i class="fas fa-map-marked-alt icon"></i>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label for="type-filter">{{ t('filters.sector') }}</label>
+                                <div class="input-wrapper">
+                                   <select id="type-filter" v-model="filters.sector" :disabled="filterOptions.sectors.length === 0">
+                                       <option value="">{{ t('filters.allSectors') }}</option>
+                                       <option v-for="sector in filterOptions.sectors" :key="sector" :value="sector">{{ t('sectors.' + sector) }}</option>
+                                   </select>
+                                   <i class="fas fa-industry icon"></i>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label for="status-filter">{{ t('filters.status') }}</label>
+                                <div class="input-wrapper">
+                                    <select id="status-filter" v-model="filters.status">
+                                        <option value="">{{ t('filters.allStatuses') }}</option>
+                                        <option value="Activo">{{ t('statuses.activo') }}</option>
+                                        <option value="Latente">{{ t('statuses.latente') }}</option>
+                                        <option value="Resuelto">{{ t('statuses.resuelto') }}</option>
+                                        <option value="Desconocido">{{ t('statuses.desconocido') }}</option>
+                                    </select>
+                                    <i class="fas fa-lightbulb icon"></i>
+                                </div>
+                            </div>
+                             <div class="filter-group">
+                                 <label for="date-filter">{{ t('filters.startDate') }}</label>
+                                 <div class="input-wrapper">
+                                    <input type="date" id="date-filter" v-model="filters.date">
+                                    <i class="fas fa-calendar-alt icon"></i>
                                  </div>
                              </div>
                         </div>
-                        <div class="filter-group">
-                            <button class="load-button" @click="onCountryChange">{{ t('filters.viewConflicts') }}</button>
-                        </div>
-                        <div class="filter-group">
-                            <label for="search">{{ t('filters.searchByName') }}</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="search" :placeholder="t('filters.searchPlaceholder')" v-model="filters.search">
-                                <i class="fas fa-search icon"></i>
+                        
+                        <div class="map-area" id="map-area">
+                            <div id="map-container" ref="mapContainer"></div>
+                            <div class="loading" v-if="isLoading">
+                                {{ t('loading') }}
                             </div>
                         </div>
-                        <div class="filter-group">
-                            <label for="region-filter">{{ t('filters.region') }}</label>
-                            <div class="input-wrapper">
-                                <select id="region-filter" v-model="filters.region" :disabled="filterOptions.regions.length === 0">
-                                     <option value="">{{ t('filters.allRegions') }}</option>
-                                     <option v-for="region in filterOptions.regions" :key="region" :value="region">{{ region }}</option>
-                                </select>
-                                <i class="fas fa-map-marked-alt icon"></i>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="type-filter">{{ t('filters.sector') }}</label>
-                            <div class="input-wrapper">
-                               <select id="type-filter" v-model="filters.sector" :disabled="filterOptions.sectors.length === 0">
-                                   <option value="">{{ t('filters.allSectors') }}</option>
-                                   <option v-for="sector in filterOptions.sectors" :key="sector" :value="sector">{{ t('sectors.' + sector) }}</option>
-                               </select>
-                               <i class="fas fa-industry icon"></i>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="status-filter">{{ t('filters.status') }}</label>
-                            <div class="input-wrapper">
-                                <select id="status-filter" v-model="filters.status">
-                                    <option value="">{{ t('filters.allStatuses') }}</option>
-                                    <option value="Activo">{{ t('statuses.activo') }}</option>
-                                    <option value="Latente">{{ t('statuses.latente') }}</option>
-                                    <option value="Resuelto">{{ t('statuses.resuelto') }}</option>
-                                    <option value="Desconocido">{{ t('statuses.desconocido') }}</option>
-                                </select>
-                                <i class="fas fa-lightbulb icon"></i>
-                            </div>
-                        </div>
-                         <div class="filter-group">
-                            <label for="date-filter">{{ t('filters.startDate') }}</label>
-                            <div class="input-wrapper">
-                               <input type="date" id="date-filter" v-model="filters.date">
-                               <i class="fas fa-calendar-alt icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="map-area" id="map-area">
-                        <div id="map-container" ref="mapContainer"></div>
-                        <div class="loading" v-if="isLoading">
-                            {{ t('loading') }}
-                        </div>
-                    </div>
-                    
-                     <div class="right-panel-wrapper" id="stats-panel">
-                         <div class="stats-panel-wrapper" v-show="!activeConflict">
-                             <div class="stats-panel">
-                                 <h2><i class="fas fa-chart-bar"></i> {{ t('stats.title') }}</h2>
-                                 <div class="stats-grid">
-                                     <div class="stat-card stat-total">
-                                         <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">{{ t('stats.total') }}</div></div>
+                        
+                         <div class="right-panel-wrapper" id="stats-panel">
+                             <div class="stats-panel-wrapper" v-show="!activeConflict">
+                                 <div class="stats-panel">
+                                     <h2><i class="fas fa-chart-bar"></i> {{ t('stats.title') }}</h2>
+                                     <div class="stats-grid">
+                                         <div class="stat-card stat-total">
+                                             <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
+                                             <div class="stat-info"><div class="stat-value">{{ stats.total }}</div><div class="stat-label">{{ t('stats.total') }}</div></div>
+                                         </div>
+                                         <div class="stat-card stat-active">
+                                             <div class="stat-icon"><i class="fas fa-fire-alt"></i></div>
+                                             <div class="stat-info"><div class="stat-value">{{ stats.active }}</div><div class="stat-label">{{ t('stats.active') }}</div></div>
+                                         </div>
+                                         <div class="stat-card stat-latent">
+                                             <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                                             <div class="stat-info"><div class="stat-value">{{ stats.latent }}</div><div class="stat-label">{{ t('stats.latent') }}</div></div>
+                                         </div>
+                                         <div class="stat-card stat-resolved">
+                                             <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                             <div class="stat-info"><div class="stat-value">{{ stats.resolved }}</div><div class="stat-label">{{ t('stats.resolved') }}</div></div>
+                                         </div>
                                      </div>
-                                     <div class="stat-card stat-active">
-                                         <div class="stat-icon"><i class="fas fa-fire-alt"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.active }}</div><div class="stat-label">{{ t('stats.active') }}</div></div>
-                                     </div>
-                                     <div class="stat-card stat-latent">
-                                         <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.latent }}</div><div class="stat-label">{{ t('stats.latent') }}</div></div>
-                                     </div>
-                                     <div class="stat-card stat-resolved">
-                                         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                                         <div class="stat-info"><div class="stat-value">{{ stats.resolved }}</div><div class="stat-label">{{ t('stats.resolved') }}</div></div>
-                                     </div>
-                                 </div>
-                                 <h3><i class="fas fa-industry"></i> {{ t('stats.sectorDistribution') }}</h3>
-                                 <div class="sector-chart">
-                                     <div class="sector-item" v-for="sector in stats.sectors" :key="sector.name">
-                                         <div class="sector-icon-wrapper" :style="{ backgroundColor: sector.color }"><i :class="sector.icon" class="sector-icon"></i></div>
-                                         <div class="sector-content">
-                                             <div class="sector-label">{{ t('sectors.' + sector.name) }}</div>
-                                             <div class="sector-bar-wrapper">
-                                                 <div class="sector-bar-container">
-                                                     <div class="sector-bar" :style="{ width: sector.percentage + '%', backgroundColor: sector.color }"></div>
+                                     <h3><i class="fas fa-industry"></i> {{ t('stats.sectorDistribution') }}</h3>
+                                     <div class="sector-chart">
+                                         <div class="sector-item" v-for="sector in stats.sectors" :key="sector.name">
+                                             <div class="sector-icon-wrapper" :style="{ backgroundColor: sector.color }"><i :class="sector.icon" class="sector-icon"></i></div>
+                                             <div class="sector-content">
+                                                 <div class="sector-label">{{ t('sectors.' + sector.name) }}</div>
+                                                 <div class="sector-bar-wrapper">
+                                                     <div class="sector-bar-container">
+                                                         <div class="sector-bar" :style="{ width: sector.percentage + '%', backgroundColor: sector.color }"></div>
+                                                     </div>
+                                                     <span class="percentage-value">{{ sector.percentage }}%</span>
                                                  </div>
-                                                 <span class="percentage-value">{{ sector.percentage }}%</span>
                                              </div>
                                          </div>
                                      </div>
-                                 </div>
-                               </div>
-                         </div>
+                                   </div>
+                             </div>
 
-                         <div class="details-panel" :class="{ active: activeConflict, 'has-image': activeConflict && activeConflict.imageUrl }">
-                             <div v-if="activeConflict" style="display: flex; flex-direction: column; height: 100%;">
-                                 <div v-if="activeConflict.imageUrl" class="details-image-container">
-                                     <img :src="activeConflict.imageUrl" :alt="t('details.imageAlt') + ' ' + activeConflict.name" @error="onImageError">
-                                 </div>
-                                 <div class="details-header">
-                                     <button class="close-btn" @click="activeConflict = null">&times;</button>
-                                     <h2>{{ activeConflict.name }}</h2>
-                                     <span class="sector-tag" :style="{ backgroundColor: getSectorColor(activeConflict.sector) }">{{ t('sectors.' + activeConflict.sector) }}</span>
-                                 </div>
-                                 <div class="details-body">
-                                     <div :class="['details-status-banner', 'status-' + activeConflict.status]">
-                                         <i :class="['fas', getStatusInfo(activeConflict.status).icon, 'icon']"></i>
-                                         <span>{{ getStatusInfo(activeConflict.status).text }}</span>
+                             <div class="details-panel" :class="{ active: activeConflict, 'has-image': activeConflict && activeConflict.imageUrl }">
+                                 <div v-if="activeConflict" style="display: flex; flex-direction: column; height: 100%;">
+                                     <div v-if="activeConflict.imageUrl" class="details-image-container">
+                                         <img :src="activeConflict.imageUrl" :alt="t('details.imageAlt') + ' ' + activeConflict.name" @error="onImageError">
                                      </div>
-                                     <div class="details-description" v-html="activeConflict.description"></div>
-                                     <div class="details-info-grid">
-                                         <div class="info-item">
-                                             <i class="fas fa-map-marked-alt icon"></i>
-                                             <div class="content">
-                                                 <label>{{ t('details.location') }}</label>
-                                                 <span class="value">{{ activeConflict.region }} <span v-if="activeConflict.isImprecise">{{ t('details.approximate') }}</span></span>
+                                     <div class="details-header">
+                                         <button class="close-btn" @click="activeConflict = null">&times;</button>
+                                         <h2>{{ activeConflict.name }}</h2>
+                                         <span class="sector-tag">{{ t('sectors.' + activeConflict.sector) }}</span>
+                                     </div>
+                                     <div class="details-body">
+                                         <div :class="['details-status-banner', 'status-' + activeConflict.status]">
+                                             <i :class="['fas', getStatusInfo(activeConflict.status).icon, 'icon']"></i>
+                                             <span>{{ getStatusInfo(activeConflict.status).text }}</span>
+                                         </div>
+                                         <div class="details-description" v-html="activeConflict.description"></div>
+                                         <div class="details-info-grid">
+                                             <div class="info-item">
+                                                 <i class="fas fa-map-marked-alt icon"></i>
+                                                 <div class="content">
+                                                     <label>{{ t('details.location') }}</label>
+                                                     <span class="value">{{ activeConflict.region }} <span v-if="activeConflict.isImprecise">{{ t('details.approximate') }}</span></span>
+                                                 </div>
+                                             </div>
+                                             <div class="info-item">
+                                                 <i class="fas fa-calendar-alt icon"></i>
+                                                 <div class="content">
+                                                     <label>{{ t('details.startDate') }}</label>
+                                                     <span class="value">{{ formatDate(activeConflict.startDate) }}</span>
+                                                 </div>
                                              </div>
                                          </div>
-                                         <div class="info-item">
-                                             <i class="fas fa-calendar-alt icon"></i>
-                                             <div class="content">
-                                                 <label>{{ t('details.startDate') }}</label>
-                                                 <span class="value">{{ formatDate(activeConflict.startDate) }}</span>
-                                             </div>
+                                     </div>
+                                     <div class="details-footer">
+                                         <div class="action-buttons">
+                                             <button class="action-btn btn-wikidata" @click="openLink('https://www.wikidata.org/wiki/' + activeConflict.id)"><i class="fas fa-database"></i> {{ t('details.viewOnWikidata') }}</button>
+                                             <button v-if="activeConflict.wikipediaUrl" class="action-btn btn-wikipedia" @click="openLink(activeConflict.wikipediaUrl)"><i class="fab fa-wikipedia-w"></i> {{ t('details.viewOnWikipedia') }}</button>
+                                             <button v-if="activeConflict.commonsUrl" class="action-btn btn-commons" @click="openLink(activeConflict.commonsUrl)"><i class="fas fa-images"></i> {{ t('details.viewOnCommons') }}</button>
                                          </div>
                                      </div>
-                                 </div>
-                                 <div class="details-footer">
-                                     <div class="action-buttons">
-                                         <button class="action-btn btn-wikidata" @click="openLink('https://www.wikidata.org/wiki/' + activeConflict.id)"><i class="fas fa-database"></i> {{ t('details.viewOnWikidata') }}</button>
-                                         <button v-if="activeConflict.wikipediaUrl" class="action-btn btn-wikipedia" @click="openLink(activeConflict.wikipediaUrl)"><i class="fab fa-wikipedia-w"></i> {{ t('details.viewOnWikipedia') }}</button>
-                                         <button v-if="activeConflict.commonsUrl" class="action-btn btn-commons" @click="openLink(activeConflict.commonsUrl)"><i class="fas fa-images"></i> {{ t('details.viewOnCommons') }}</button>
-                                     </div>
-                                 </div>
-                               </div>
-                         </div>
-                       </div>
-                </div>
-            </div>
-            
-            <footer>
-                <div class="footer-container">
-                    <div class="footer-logos">
-                        <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
-                        <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="wikidata logo.png" alt="Logo Wikidata"></a>
+                                   </div>
+                             </div>
+                           </div>
                     </div>
-                    <p class="footer-text">{{ t('footer.text') }}</p>
-                    <p class="footer-copyright">© {{ new Date().getFullYear() }} {{ t('footer.copyright') }}</p>
                 </div>
-            </footer>
+                
+                <footer>
+                    <div class="footer-container">
+                        <div class="footer-logos">
+                            <a href="https://www.wikimedia.cl/" target="_blank" rel="noopener noreferrer"><img src="wikiemdia foundation logo.webp" alt="Logo Wikimedia Chile"></a>
+                            <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer"><img src="wikidata logo.png" alt="Logo Wikidata"></a>
+                        </div>
+                        <p class="footer-text">{{ t('footer.text') }}</p>
+                        <p class="footer-copyright">© {{ new Date().getFullYear() }} {{ t('footer.copyright') }}</p>
+                    </div>
+                </footer>
+            </div>
         `;
 
         createApp({
@@ -706,7 +851,7 @@
                         stats: { title: 'Estadísticas', total: 'Total', active: 'Activos', latent: 'Latentes', resolved: 'Resueltos', sectorDistribution: 'Distribución por Sector' },
                         details: { location: 'Ubicación', approximate: '(aprox.)', startDate: 'Fecha de inicio', viewOnWikidata: 'Ver en Wikidata', viewOnWikipedia: 'Ver en Wikipedia', viewOnCommons: 'Ver en Commons', noName: 'Sin nombre', noDescription: 'Sin descripción', imageAlt: 'Imagen de' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflicto Activo' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflicto Latente' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflicto Resuelto' }, Desconocido: { icon: 'fa-question-circle', text: 'Estado Desconocido' } },
-                        tutorial: { step1: { title: 'Panel de Filtros', text: 'Aquí puedes filtrar los conflictos por país, nombre, sector y más. Selecciona uno o varios países y presiona "Ver Conflictos" para empezar.' }, step2: { title: 'Mapa Interactivo', text: 'Los conflictos aparecerán aquí. Los puntos con borde discontinuo indican una ubicación aproximada. Haz clic en un punto para ver más detalles.' }, step3: { title: 'Estadísticas y Detalles', text: 'Este panel muestra un resumen de los conflictos visualizados. Al seleccionar un conflicto en el mapa, aquí verás su información detallada.' }, previous: 'Anterior', next: 'Siguiente', finish: 'Finalizar' },
+                        tutorial: { step1: { title: 'Panel de Filtros', text: 'Aquí puedes filtrar los conflictos por país, nombre, sector y más. Selecciona uno o varios países y presiona "Ver Conflictos" para empezar.', icon: 'fa-filter' }, step2: { title: 'Mapa Interactivo', text: 'Los conflictos aparecerán aquí. Los puntos con borde discontinuo indican una ubicación aproximada. Haz clic en un punto para ver más detalles.', icon: 'fa-map-marked-alt' }, step3: { title: 'Estadísticas y Detalles', text: 'Este panel muestra un resumen de los conflictos visualizados. Al seleccionar un conflicto en el mapa, aquí verás su información detallada.', icon: 'fa-chart-bar' }, previous: 'Anterior', next: 'Siguiente', finish: 'Finalizar' },
                         welcome: { title: 'Exploración Iniciada', message: '¡Todo listo! Ya puedes navegar, filtrar y descubrir los conflictos socioambientales. ¡Que tu curiosidad sea tu guía!', button: 'Comenzar a Explorar' },
                         footer: { text: 'Desarrollado con datos de Wikidata, un proyecto de la Fundación Wikimedia.', copyright: 'Wikimedia Chile. Contenido disponible bajo licencia CC BY-SA 4.0.' },
                         selectAll: 'Seleccionar todos',
@@ -722,7 +867,7 @@
                         stats: { title: 'Statistics', total: 'Total', active: 'Active', latent: 'Latent', resolved: 'Resolved', sectorDistribution: 'Distribution by Sector' },
                         details: { location: 'Location', approximate: '(approx.)', startDate: 'Start Date', viewOnWikidata: 'View on Wikidata', viewOnWikipedia: 'View on Wikipedia', viewOnCommons: 'View on Commons', noName: 'No name', noDescription: 'No description', imageAlt: 'Image of' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Active Conflict' }, Latente: { icon: 'fa-hourglass-half', text: 'Latent Conflict' }, Resuelto: { icon: 'fa-check-circle', text: 'Resolved Conflict' }, Desconocido: { icon: 'fa-question-circle', text: 'Unknown Status' } },
-                        tutorial: { step1: { title: 'Filter Panel', text: 'Here you can filter conflicts by country, name, sector, and more. Select one or more countries and press "View Conflicts" to begin.' }, step2: { title: 'Interactive Map', text: 'Conflicts will appear here. Dashed border points indicate an approximate location. Click on a point for more details.' }, step3: { title: 'Statistics & Details', text: 'This panel shows a summary of the displayed conflicts. When you select a conflict on the map, its detailed information will appear here.' }, previous: 'Previous', next: 'Next', finish: 'Finish' },
+                        tutorial: { step1: { title: 'Filter Panel', text: 'Here you can filter conflicts by country, name, sector, and more. Select one or more countries and press "View Conflicts" to begin.', icon: 'fa-filter' }, step2: { title: 'Interactive Map', text: 'Conflicts will appear here. Dashed border points indicate an approximate location. Click on a point for more details.', icon: 'fa-map-marked-alt' }, step3: { title: 'Statistics & Details', text: 'This panel shows a summary of the displayed conflicts. When you select a conflict on the map, its detailed information will appear here.', icon: 'fa-chart-bar' }, previous: 'Previous', next: 'Next', finish: 'Finish' },
                         welcome: { title: 'Exploration Started', message: 'All set! You can now browse, filter, and discover socio-environmental conflicts. Let your curiosity be your guide!', button: 'Start Exploring' },
                         footer: { text: 'Developed with data from Wikidata, a Wikimedia Foundation project.', copyright: 'Wikimedia Chile. Content available under a CC BY-SA 4.0 license.' },
                         selectAll: 'Select All',
@@ -738,7 +883,7 @@
                         stats: { title: 'Statistiche', total: 'Totale', active: 'Attivi', latent: 'Latenti', resolved: 'Risolti', sectorDistribution: 'Distribuzione per Settore' },
                         details: { location: 'Posizione', approximate: '(appross.)', startDate: 'Data di inizio', viewOnWikidata: 'Vedi su Wikidata', viewOnWikipedia: 'Vedi su Wikipedia', viewOnCommons: 'Vedi su Commons', noName: 'Senza nome', noDescription: 'Nessuna descrizione', imageAlt: 'Immagine di' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflitto Attivo' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflitto Latente' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflitto Risolto' }, Desconocido: { icon: 'fa-question-circle', text: 'Stato Sconosciuto' } },
-                        tutorial: { step1: { title: 'Pannello Filtri', text: 'Qui puoi filtrare i conflitti per paese, nome, settore e altro. Seleziona uno o più paesi e premi "Mostra Conflitti" per iniziare.' }, step2: { title: 'Mappa Interattiva', text: 'I conflitti appariranno qui. I punti con bordo tratteggiato indicano una posizione approssimativa. Clicca su un punto per maggiori dettagli.' }, step3: { title: 'Statistiche e Dettagli', text: 'Questo pannello mostra un riepilogo dei conflitti visualizzati. Selezionando un conflitto sulla mappa, qui vedrai le sue informazioni dettagliate.' }, previous: 'Precedente', next: 'Successivo', finish: 'Fine' },
+                        tutorial: { step1: { title: 'Pannello Filtri', text: 'Qui puoi filtrare i conflitti per paese, nome, settore e altro. Seleziona uno o più paesi e premi "Mostra Conflitti" per iniziare.', icon: 'fa-filter' }, step2: { title: 'Mappa Interattiva', text: 'I conflitti appariranno qui. I punti con bordo tratteggiato indicano una posizione approssimativa. Clicca su un punto per maggiori dettagli.', icon: 'fa-map-marked-alt' }, step3: { title: 'Statistiche e Dettagli', text: 'Questo pannello mostra un riepilogo dei conflitti visualizzati. Selezionando un conflitto sulla mappa, qui vedrai le sue informazioni dettagliate.', icon: 'fa-chart-bar' }, previous: 'Precedente', next: 'Successivo', finish: 'Fine' },
                         welcome: { title: 'Esplorazione Iniziata', message: 'Tutto pronto! Ora puoi navigare, filtrare e scoprire i conflitti socio-ambientali. Lascia che la tua curiosità sia la tua guida!', button: 'Inizia a Esplorare' },
                         footer: { text: 'Sviluppato con dati da Wikidata, un progetto della Wikimedia Foundation.', copyright: 'Wikimedia Chile. Contenuto disponibile con licenza CC BY-SA 4.0.' },
                         selectAll: 'Seleziona tutto',
@@ -754,7 +899,7 @@
                         stats: { title: '統計', total: '合計', active: '進行中', latent: '潜在的', resolved: '解決済み', sectorDistribution: 'セクター別分布' },
                         details: { location: '場所', approximate: '(おおよそ)', startDate: '開始日', viewOnWikidata: 'Wikidataで表示', viewOnWikipedia: 'Wikipediaで表示', viewOnCommons: 'Commonsで表示', noName: '名前なし', noDescription: '説明なし', imageAlt: 'の画像' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: '進行中の紛争' }, Latente: { icon: 'fa-hourglass-half', text: '潜在的な紛争' }, Resuelto: { icon: 'fa-check-circle', text: '解決済みの紛争' }, Desconocido: { icon: 'fa-question-circle', text: '不明なステータス' } },
-                        tutorial: { step1: { title: 'フィルターパネル', text: 'ここで国、名前、セクターなどで紛争をフィルターできます。「紛争を表示」を押して開始します。' }, step2: { title: 'インタラクティブマップ', text: '紛争はここに表示されます。破線の点はおおよその場所を示します。詳細を見るには点をクリックしてください。' }, step3: { title: '統計と詳細', text: 'このパネルには表示された紛争の概要が表示されます。地図で紛争を選択すると、詳細情報がここに表示されます。' }, previous: '前へ', next: '次へ', finish: '終了' },
+                        tutorial: { step1: { title: 'フィルターパネル', text: 'ここで国、名前、セクターなどで紛争をフィルターできます。「紛争を表示」を押して開始します。', icon: 'fa-filter' }, step2: { title: 'インタラクティブマップ', text: '紛争はここに表示されます。破線の点はおおよその場所を示します。詳細を見るには点をクリックしてください。', icon: 'fa-map-marked-alt' }, step3: { title: '統計と詳細', text: 'このパネルには表示された紛争の概要が表示されます。地図で紛争を選択すると、詳細情報がここに表示されます。', icon: 'fa-chart-bar' }, previous: '前へ', next: '次へ', finish: '終了' },
                         welcome: { title: '探索開始', message: '準備完了！社会環境紛争を閲覧、フィルタリング、発見できます。好奇心をガイドにしましょう！', button: '探索を始める' },
                         footer: { text: 'Wikimedia FoundationのプロジェクトであるWikidataのデータを使用して開発されました。', copyright: 'Wikimedia Chile. コンテンツはCC BY-SA 4.0ライセンスで利用可能です。' },
                         selectAll: 'すべて選択',
@@ -770,7 +915,7 @@
                         stats: { title: 'Estatísticas', total: 'Total', active: 'Ativos', latent: 'Latentes', resolved: 'Resolvidos', sectorDistribution: 'Distribuição por Setor' },
                         details: { location: 'Localização', approximate: '(aprox.)', startDate: 'Data de Início', viewOnWikidata: 'Ver no Wikidata', viewOnWikipedia: 'Ver na Wikipédia', viewOnCommons: 'Ver no Commons', noName: 'Sem nome', noDescription: 'Sem descrição', imageAlt: 'Imagem de' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflito Ativo' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflito Latente' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflito Resolvido' }, Desconocido: { icon: 'fa-question-circle', text: 'Estado Desconhecido' } },
-                        tutorial: { step1: { title: 'Painel de Filtros', text: 'Aqui você pode filtrar conflitos por país, nome, setor e mais. Selecione um ou mais países e pressione "Ver Conflitos" para começar.' }, step2: { title: 'Mapa Interativo', text: 'Os conflitos aparecerão aqui. Pontos com borda tracejada indicam uma localização aproximada. Clique em um ponto para mais detalhes.' }, step3: { title: 'Estatísticas e Detalhes', text: 'Este painel mostra um resumo dos conflitos exibidos. Ao selecionar um conflito no mapa, suas informações detalhadas aparecerão aqui.' }, previous: 'Anterior', next: 'Próximo', finish: 'Finalizar' },
+                        tutorial: { step1: { title: 'Painel de Filtros', text: 'Aqui você pode filtrar conflitos por país, nome, setor e mais. Selecione um ou mais países e pressione "Ver Conflitos" para começar.', icon: 'fa-filter' }, step2: { title: 'Mapa Interativo', text: 'Os conflitos aparecerão aqui. Pontos com borda tracejada indicam uma localização aproximada. Clique em um ponto para mais detalhes.', icon: 'fa-map-marked-alt' }, step3: { title: 'Estatísticas e Detalhes', text: 'Este painel mostra um resumo dos conflitos exibidos. Ao selecionar um conflito no mapa, suas informações detalhadas aparecerão aqui.', icon: 'fa-chart-bar' }, previous: 'Anterior', next: 'Próximo', finish: 'Finalizar' },
                         welcome: { title: 'Exploração Iniciada', message: 'Tudo pronto! Agora você pode navegar, filtrar e descobrir os conflitos socioambientais. Deixe sua curiosidade ser seu guia!', button: 'Começar a Explorar' },
                         footer: { text: 'Desenvolvido com dados do Wikidata, um projeto da Fundação Wikimedia.', copyright: 'Wikimedia Chile. Conteúdo disponível sob a licença CC BY-SA 4.0.' },
                         selectAll: 'Selecionar todos',
@@ -786,7 +931,7 @@
                         stats: { title: 'Statistiques', total: 'Total', active: 'Actifs', latent: 'Latents', resolved: 'Résolus', sectorDistribution: 'Distribution par Secteur' },
                         details: { location: 'Emplacement', approximate: '(approx.)', startDate: 'Date de début', viewOnWikidata: 'Voir sur Wikidata', viewOnWikipedia: 'Voir sur Wikipédia', viewOnCommons: 'Voir sur Commons', noName: 'Sans nom', noDescription: 'Aucune description', imageAlt: 'Image de' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Conflit Actif' }, Latente: { icon: 'fa-hourglass-half', text: 'Conflit Latent' }, Resuelto: { icon: 'fa-check-circle', text: 'Conflit Résolu' }, Desconocido: { icon: 'fa-question-circle', text: 'Statut Inconnu' } },
-                        tutorial: { step1: { title: 'Panneau des filtres', text: 'Ici, vous pouvez filtrer les conflits par pays, nom, secteur, etc. Sélectionnez un ou plusieurs pays et appuyez sur "Voir les conflits" pour commencer.' }, step2: { title: 'Carte interactive', text: 'Les conflits apparaîtront ici. Les points avec une bordure en pointillé indiquent un emplacement approximatif. Cliquez sur un point pour plus de détails.' }, step3: { title: 'Statistiques et détails', text: 'Ce panneau affiche un résumé des conflits visualisés. Lorsque vous sélectionnez un conflit sur la carte, ses informations détaillées s\'affichent ici.' }, previous: 'Précédent', next: 'Suivant', finish: 'Terminer' },
+                        tutorial: { step1: { title: 'Panneau des filtres', text: 'Ici, vous pouvez filtrer les conflits par pays, nom, secteur, etc. Sélectionnez un ou plusieurs pays et appuyez sur "Voir les conflits" pour commencer.', icon: 'fa-filter' }, step2: { title: 'Carte interactive', text: 'Les conflits apparaîtront ici. Les points avec une bordure en pointillé indiquent un emplacement approximatif. Cliquez sur un point pour plus de détails.', icon: 'fa-map-marked-alt' }, step3: { title: 'Statistiques et détails', text: 'Ce panneau affiche un résumé des conflits visualisés. Lorsque vous sélectionnez un conflit sur la carte, ses informations détaillées s\'affichent ici.', icon: 'fa-chart-bar' }, previous: 'Précédent', next: 'Suivant', finish: 'Terminer' },
                         welcome: { title: 'Exploration commencée', message: 'Tout est prêt ! Vous pouvez maintenant parcourir, filtrer et découvrir les conflits socio-environnementaux. Laissez votre curiosité vous guider !', button: 'Commencer à explorer' },
                         footer: { text: 'Développé avec les données de Wikidata, un projet de la Fondation Wikimedia.', copyright: 'Wikimedia Chile. Contenu disponible sous licence CC BY-SA 4.0.' },
                         selectAll: 'Tout sélectionner',
@@ -802,7 +947,7 @@
                         stats: { title: 'Statistiken', total: 'Gesamt', active: 'Aktiv', latent: 'Latent', resolved: 'Gelöst', sectorDistribution: 'Verteilung nach Sektor' },
                         details: { location: 'Standort', approximate: '(ca.)', startDate: 'Startdatum', viewOnWikidata: 'Auf Wikidata ansehen', viewOnWikipedia: 'Auf Wikipedia ansehen', viewOnCommons: 'Auf Commons ansehen', noName: 'Ohne Namen', noDescription: 'Keine Beschreibung', imageAlt: 'Bild von' },
                         statusInfo: { Activo: { icon: 'fa-fire-alt', text: 'Aktiver Konflikt' }, Latente: { icon: 'fa-hourglass-half', text: 'Latenter Konflikt' }, Resuelto: { icon: 'fa-check-circle', text: 'Gelöster Konflikt' }, Desconocido: { icon: 'fa-question-circle', text: 'Unbekannter Status' } },
-                        tutorial: { step1: { title: 'Filterbereich', text: 'Hier können Sie Konflikte nach Land, Name, Sektor und mehr filtern. Wählen Sie ein oder mehrere Länder aus und drücken Sie "Konflikte anzeigen", um zu beginnen.' }, step2: { title: 'Interaktive Karte', text: 'Konflikte werden hier angezeigt. Gestrichelte Punkte deuten auf einen ungefähren Standort hin. Klicken Sie auf einen Punkt für weitere Details.' }, step3: { title: 'Statistiken & Details', text: 'Dieser Bereich zeigt eine Zusammenfassung der angezeigten Konflikte. Wenn Sie einen Konflikt auf der Karte auswählen, werden hier dessen detaillierte Informationen angezeigt.' }, previous: 'Zurück', next: 'Weiter', finish: 'Beenden' },
+                        tutorial: { step1: { title: 'Filterbereich', text: 'Hier können Sie Konflikte nach Land, Name, Sektor und mehr filtern. Wählen Sie ein oder mehrere Länder aus und drücken Sie "Konflikte anzeigen", um zu beginnen.', icon: 'fa-filter' }, step2: { title: 'Interaktive Karte', text: 'Konflikte werden hier angezeigt. Gestrichelte Punkte deuten auf einen ungefähren Standort hin. Klicken Sie auf einen Punkt für weitere Details.', icon: 'fa-map-marked-alt' }, step3: { title: 'Statistiken & Details', text: 'Dieser Bereich zeigt eine Zusammenfassung der angezeigten Konflikte. Wenn Sie einen Konflikt auf der Karte auswählen, werden hier dessen detaillierte Informationen angezeigt.', icon: 'fa-chart-bar' }, previous: 'Zurück', next: 'Weiter', finish: 'Beenden' },
                         welcome: { title: 'Erkundung gestartet', message: 'Alles bereit! Sie können jetzt sozio-ökologische Konflikte durchsuchen, filtern und entdecken. Lassen Sie sich von Ihrer Neugier leiten!', button: 'Erkundung starten' },
                         footer: { text: 'Entwickelt mit Daten von Wikidata, einem Projekt der Wikimedia Foundation.', copyright: 'Wikimedia Chile. Inhalte verfügbar unter der CC BY-SA 4.0 Lizenz.' },
                         selectAll: 'Alle auswählen',
@@ -819,13 +964,13 @@
                         else break;
                     }
                     if (result === undefined) {
-                         const fallbackKeys = key.split('.');
-                         let fallbackResult = translations['es'];
-                         for (const fk of fallbackKeys) {
-                             if (fallbackResult) fallbackResult = fallbackResult[fk];
-                             else return key;
-                         }
-                         return fallbackResult;
+                        const fallbackKeys = key.split('.');
+                        let fallbackResult = translations['es'];
+                        for (const fk of fallbackKeys) {
+                            if (fallbackResult) fallbackResult = fallbackResult[fk];
+                            else return key;
+                        }
+                        return fallbackResult;
                     }
                     return result;
                 };
@@ -844,10 +989,12 @@
                 const showWelcomeModal = ref(false);
                 const tutorialPopupStyle = ref({});
                 const tutorialHighlightStyle = ref({});
+                const showLangSelectionModal = ref(false);
                 const theme = ref('light');
                 let map = null;
                 let markers = null;
                 const mapContainer = ref(null);
+                const tutorialPopup = ref(null);
                 
                 const toggleTheme = () => {
                     const newTheme = theme.value === 'light' ? 'dark' : 'light';
@@ -906,9 +1053,9 @@
                 });
                 
                 const tutorialSteps = computed(() => [
-                    { element: '#filters-panel', title: t('tutorial.step1.title'), text: t('tutorial.step1.text') },
-                    { element: '#map-area', title: t('tutorial.step2.title'), text: t('tutorial.step2.text') },
-                    { element: '#stats-panel', title: t('tutorial.step3.title'), text: t('tutorial.step3.text') }
+                    { element: '#filters-panel', title: t('tutorial.step1.title'), text: t('tutorial.step1.text'), icon: t('tutorial.step1.icon') },
+                    { element: '#map-area', title: t('tutorial.step2.title'), text: t('tutorial.step2.text'), icon: t('tutorial.step2.icon') },
+                    { element: '#stats-panel', title: t('tutorial.step3.title'), text: t('tutorial.step3.text'), icon: t('tutorial.step3.icon') }
                 ]);
                 const currentTutorialStep = computed(() => tutorialSteps.value[tutorialStep.value]);
 
@@ -916,6 +1063,31 @@
                     if (countries.value.length === 0) return t('selectAll');
                     return filters.country.length === countries.value.length ? t('deselectAll') : t('selectAll');
                 });
+
+                const initialize_app = async (langCode) => {
+                    currentLang.value = langCode;
+                    document.documentElement.lang = langCode;
+                    localStorage.setItem('geoConflictosLang', langCode);
+                    showLangSelectionModal.value = false;
+
+                    await nextTick();
+
+                    map = L.map(mapContainer.value).setView([-40, -71], 4);
+                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                    markers = L.featureGroup().addTo(map);
+                    
+                    await fetchCountries();
+                    await fetchData(filters.country);
+                    
+                    document.addEventListener('click', handleClickOutside);
+                    window.addEventListener('resize', handleResize);
+
+                    if (localStorage.getItem('geoConflictosTutorialSeen') !== 'true') {
+                        setTimeout(() => {
+                            isTutorialActive.value = true;
+                        }, 500);
+                    }
+                };
 
                 // --- MÉTODOS ---
                 const fetchData = async (countryQIDs) => {
@@ -1042,6 +1214,7 @@
                     }
                 };
                 const changeLanguage = async (langCode) => {
+                    localStorage.setItem('geoConflictosLang', langCode);
                     currentLang.value = langCode;
                     document.documentElement.lang = langCode;
                     isLangDropdownOpen.value = false;
@@ -1076,11 +1249,44 @@
                         height: `${rect.height + (padding * 2)}px`,
                     };
 
-                    tutorialPopupStyle.value = {
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                    };
+                    const popupEl = tutorialPopup.value;
+                    if (!popupEl) return;
+
+                    // Lógica de posicionamiento responsiva del popup
+                    if (window.innerWidth < 768) {
+                        tutorialPopupStyle.value = {
+                            top: 'auto', bottom: '1.5rem', left: '50%', right: 'auto',
+                            transform: 'translateX(-50%)',
+                        };
+                    } else {
+                        const popupRect = popupEl.getBoundingClientRect();
+                        let top, left;
+
+                        // Intentar a la derecha
+                        if (rect.right + popupRect.width + padding < window.innerWidth) {
+                            left = rect.right + padding;
+                            top = rect.top + rect.height / 2 - popupRect.height / 2;
+                        } 
+                        // Intentar a la izquierda
+                        else if (rect.left - popupRect.width - padding > 0) {
+                            left = rect.left - popupRect.width - padding;
+                            top = rect.top + rect.height / 2 - popupRect.height / 2;
+                        } 
+                        // Por defecto, abajo
+                        else {
+                            left = rect.left + rect.width / 2 - popupRect.width / 2;
+                            top = rect.bottom + padding;
+                        }
+
+                        // Asegurar que no se salga de la pantalla
+                        top = Math.max(padding, Math.min(top, window.innerHeight - popupRect.height - padding));
+                        left = Math.max(padding, Math.min(left, window.innerWidth - popupRect.width - padding));
+
+                        tutorialPopupStyle.value = {
+                            top: `${top}px`, left: `${left}px`,
+                            bottom: 'auto', right: 'auto', transform: 'none',
+                        };
+                    }
                 };
                 
                 const handleClickOutside = (event) => {
@@ -1110,7 +1316,7 @@
                     }
                 };
 
-                onMounted(async () => {
+                onMounted(() => {
                     const savedTheme = localStorage.getItem('geoConflictosTheme');
                     if (savedTheme) {
                         theme.value = savedTheme;
@@ -1119,27 +1325,15 @@
                     }
                     document.documentElement.setAttribute('data-theme', theme.value);
 
-
-                    const userLang = navigator.language.split('-')[0];
-                    if (Object.keys(supportedLangs).includes(userLang)) {
-                        currentLang.value = userLang;
-                    }
-                    document.documentElement.lang = currentLang.value;
-
-                    map = L.map(mapContainer.value).setView([-40, -71], 4);
-                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '&copy; OpenStreetMap' }).addTo(map);
-                    markers = L.featureGroup().addTo(map);
-                    
-                    await fetchCountries();
-                    await fetchData(filters.country);
-                    
-                    document.addEventListener('click', handleClickOutside);
-                    window.addEventListener('resize', handleResize);
-
-                    if (localStorage.getItem('geoConflictosTutorialSeen') !== 'true') {
-                        setTimeout(() => {
-                            isTutorialActive.value = true;
-                        }, 500);
+                    const savedLang = localStorage.getItem('geoConflictosLang');
+                    if (savedLang && supportedLangs[savedLang]) {
+                        initialize_app(savedLang);
+                    } else {
+                         const userLang = navigator.language.split('-')[0];
+                         if (supportedLangs[userLang]) {
+                             currentLang.value = userLang;
+                         }
+                        showLangSelectionModal.value = true;
                     }
                 });
                 
@@ -1157,7 +1351,9 @@
                         });
                     }
                 });
-                watch(tutorialStep, updateTutorialHighlight);
+                watch(tutorialStep, () => {
+                  nextTick(() => updateTutorialHighlight());
+                });
 
                 watch(filteredConflicts, (newConflicts) => {
                     if (!map || !markers) return;
@@ -1190,11 +1386,10 @@
                 });
 
                 return {
-                    isLoading, countries, filters, filteredConflicts, stats, filterOptions, activeConflict, mapContainer, onCountryChange, getSectorColor, getStatusInfo, formatDate, openLink, isCountryDropdownOpen, countrySearchTerm, filteredCountries, getCountryName, removeCountry, countrySelectContainer, isTutorialActive, tutorialStep, currentTutorialStep, nextStep, prevStep, finishTutorial, tutorialPopupStyle, tutorialHighlightStyle, showWelcomeModal, closeWelcomeModal, toggleSelectAllCountries, selectAllButtonText, supportedLangs, currentLang, changeLanguage, isLangDropdownOpen, langSwitcherContainer, t, tutorialSteps, theme, toggleTheme, onImageError
+                    isLoading, countries, filters, filteredConflicts, stats, filterOptions, activeConflict, mapContainer, onCountryChange, getSectorColor, getStatusInfo, formatDate, openLink, isCountryDropdownOpen, countrySearchTerm, filteredCountries, getCountryName, removeCountry, countrySelectContainer, isTutorialActive, tutorialStep, currentTutorialStep, nextStep, prevStep, finishTutorial, tutorialPopupStyle, tutorialHighlightStyle, showWelcomeModal, closeWelcomeModal, toggleSelectAllCountries, selectAllButtonText, supportedLangs, currentLang, changeLanguage, isLangDropdownOpen, langSwitcherContainer, t, tutorialSteps, theme, toggleTheme, onImageError, showLangSelectionModal, initialize_app, tutorialPopup
                 };
             }
         }).mount('#app');
     </script>
 </body>
 </html>
-
