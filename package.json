@@ -1,0 +1,24 @@
+{
+  "name": "geo-conflictos",
+  "version": "1.0.0",
+  "description": "GeoConflictos\r Visión General\r GeoConflictos es una aplicación web interactiva diseñada para visualizar conflictos socioambientales en múltiples países. Utilizando datos abiertos y colaborativos de la base de datos de Wikidata, esta herramienta ofrece una visión geográfica y estadística de diversas tensiones territoriales y ambientales a nivel global.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordylizana-ship-it/Geo-Conflictos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jordylizana-ship-it/Geo-Conflictos/issues"
+  },
+  "homepage": "https://github.com/jordylizana-ship-it/Geo-Conflictos#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

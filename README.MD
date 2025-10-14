@@ -1,61 +1,78 @@
-GeoConflictos
-Visión General
-GeoConflictos es una aplicación web interactiva diseñada para visualizar conflictos socioambientales en múltiples países. Utilizando datos abiertos y colaborativos de la base de datos de Wikidata, esta herramienta ofrece una visión geográfica y estadística de diversas tensiones territoriales y ambientales a nivel global.
+GeoConflictos - Mapa Interactivo de Conflictos Socioambientales
+Una aplicación web interactiva para visualizar y analizar conflictos socioambientales en múltiples países, utilizando datos abiertos y colaborativos de Wikidata.
 
-El objetivo principal es proporcionar una plataforma accesible y fácil de usar para que investigadores, periodistas, estudiantes y el público en general puedan explorar, filtrar y comprender la distribución y el estado de estos conflictos.
+Visita la aplicación en vivo (ejemplo): [Enlace a la app desplegada]
 
-Características Actuales
-  Mapa Interactivo: Visualización de conflictos con coordenadas geográficas en un mapa mundial (potenciado por Leaflet.js).
+Acerca del Proyecto
+GeoConflictos es una herramienta diseñada para proporcionar una visión geográfica y estadística de diversas tensiones territoriales y ambientales a nivel global. El objetivo es ofrecer una plataforma accesible para que investigadores, periodistas, estudiantes y el público en general puedan explorar, filtrar y comprender la distribución y el estado de estos conflictos.
 
-  Datos de Wikidata: La información se obtiene en tiempo real a través de consultas SPARQL a la base de datos de Wikidata, asegurando datos actualizados y abiertos.
+La arquitectura del proyecto, con un backend en Node.js/Express sirviendo un frontend en Vue.js 3, asegura un rendimiento robusto y una experiencia de usuario fluida y completamente responsiva.
 
-  Panel de Estadísticas: Un resumen visual que muestra:
-    -   El número total de conflictos visualizados.
-    -   El desglose por estado (Activos, Latentes, Resueltos).
-    -   Un gráfico de barras con la distribución por sector (Minería, Agua, Forestal, etc.).
+Características Principales
+🗺️ Mapa Interactivo: Visualización de conflictos con coordenadas geográficas precisas y aproximadas en un mapa mundial, potenciado por Leaflet.js.
 
-  Panel de Detalles por Conflicto: Al hacer clic en un marcador del mapa, se despliega un panel con información detallada, incluyendo:
-    -   Descripción del conflicto (enriquecida con datos de Wikipedia si están disponibles).
-    -   Región, país, fecha de inicio y estado actual.
-    -   Enlaces directos a las páginas de Wikidata.
+🔗 Datos Abiertos y en Vivo: La información se obtiene en tiempo real a través de consultas SPARQL a Wikidata, asegurando datos actualizados.
 
-El botón de Wikipedia solo se muestra si existe una página asociada al conflicto.
+📊 Panel de Estadísticas Dinámico: Un resumen visual que muestra el total de conflictos, el desglose por estado (Activo, Latente, Resuelto) y un gráfico de barras con la distribución por sector (Minería, Agua, etc.).
 
-  Filtros Avanzados: Un panel de filtros intuitivo que permite a los usuarios acotar la búsqueda por:
+📄 Panel de Detalles por Conflicto: Al seleccionar un conflicto, se despliega un panel con su descripción, región, fecha de inicio y enlaces directos a Wikidata, Wikipedia y Wikimedia Commons.
 
-País: Permite seleccionar uno o varios países, con una opción para "Seleccionar todos".
-    -   Nombre del conflicto.
-    -   Región: Las regiones se muestran con el prefijo del país para una fácil identificación (ej: "Chile - Atacama").
-    -   Sector productivo involucrado.
-    -   Estado actual (Activo, Latente, etc.).
-    -   Fecha de inicio.
+🔍 Filtros Avanzados: Un panel intuitivo que permite acotar la búsqueda por múltiples países, nombre, región, sector, estado y fecha de inicio.
 
-  Diseño Responsivo: La interfaz se adapta a diferentes tamaños de pantalla, desde computadores de escritorio hasta dispositivos móviles.
+📱 Diseño Responsivo: La interfaz se adapta perfectamente a cualquier tamaño de pantalla, desde computadores de escritorio hasta dispositivos móviles.
 
-Tutorial Interactivo: Una guía de bienvenida para nuevos usuarios que explica las funcionalidades principales de la aplicación.
+🎓 Tutorial Interactivo: Una guía de bienvenida inteligente y responsiva que introduce a los nuevos usuarios a todas las funcionalidades de la plataforma.
 
-Tecnologías Utilizadas
-  HTML5
+🌐 Soporte Multilingüe: La interfaz está completamente traducida a 7 idiomas, con una selección inicial para el usuario.
 
-  CSS3 (con Flexbox y Grid para el layout)
+🎨 Tema Claro y Oscuro: Permite al usuario cambiar entre un tema claro y uno oscuro para mayor comodidad visual.
 
-  JavaScript (ES6+)
+Construido Con
+Este proyecto fue posible gracias a las siguientes tecnologías:
 
-Vue.js (v3): Como framework reactivo para la gestión del estado y la interfaz de usuario.
+Backend:
 
-  Leaflet.js: Para el mapa interactivo.
+Node.js
 
-  Wikidata SPARQL Query Service: Como fuente de datos.
+Express.js
 
-  Font Awesome: Para la iconografía.
+Frontend:
 
-  Google Fonts: Para la tipografía.
+Vue.js 3 (con Composition API)
 
-Cómo Ejecutar
-Este es un proyecto web estático y no requiere un servidor complejo.
+Leaflet.js (para el mapa interactivo)
 
-Asegúrate de tener todos los archivos necesarios en la misma carpeta.
+Font Awesome
 
-Abre el archivo index.html en cualquier navegador web moderno (como Chrome, Firefox, Edge, etc.).
+Wikidata SPARQL Query Service (como fuente de datos)
 
-La aplicación se conectará a internet para obtener los datos de Wikidata y se iniciará automáticamente.
+HTML5 y CSS3 (con variables para tematización)
+
+Uso Local
+Para ejecutar este proyecto en tu propia máquina, sigue estos pasos:
+
+Prerrequisitos: Asegúrate de tener Node.js instalado (que incluye npm).
+
+Clona el repositorio (ejemplo):
+
+git clone [https://github.com/jordylizana-ship-it/Geo-Conflictos](https://github.com/jordylizana-ship-it/Geo-Conflictos)
+
+Navega a la carpeta del proyecto:
+
+cd geoconflictos
+
+Instala las dependencias:
+
+npm install
+
+Inicia el servidor:
+
+npm start
+
+¡Listo! La aplicación estará corriendo en http://localhost:3000.
+
+Licencia
+Distribuido bajo la Licencia MIT. Ver LICENSE para más información.
+
+Contacto
+Tu Nombre - [enlace a tu perfil de GitHub o red social]
