@@ -73,6 +73,3 @@ npm start
 
 Licencia
 Distribuido bajo la Licencia MIT. Ver LICENSE para más información.
-
-Contacto
-Tu Nombre - [enlace a tu perfil de GitHub o red social]
