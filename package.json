@@ -4,6 +4,7 @@
   "description": "GeoConflictos\r Visión General\r GeoConflictos es una aplicación web interactiva diseñada para visualizar conflictos socioambientales en múltiples países. Utilizando datos abiertos y colaborativos de la base de datos de Wikidata, esta herramienta ofrece una visión geográfica y estadística de diversas tensiones territoriales y ambientales a nivel global.",
   "main": "index.js",
   "scripts": {
+     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 
 // 3. Definir el puerto
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // 4. Configurar Express para servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
