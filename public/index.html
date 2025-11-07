@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoConflictos - Mapa Multilingüe de Conflictos Socioambientales</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -550,6 +552,8 @@
         }
     }
     </script>
+
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <script type="module">
         import { createApp, ref, reactive, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue';
@@ -1098,7 +1102,7 @@
                     isLoading.value = true;
                     activeConflict.value = null;
                     const countriesFilter = `VALUES ?country { ${countryQIDs.map(id => `wd:${id}`).join(' ')} }`;
-                    const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?adminEntity ?adminEntityLabel ?wikipediaUrl ?countryLabel ?image ?commonsCategory WHERE { ${countriesFilter} ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q472983 wd:Q1983228 wd:Q1193633 wd:Q49343 wd:Q274880 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131 ?adminEntity. } OPTIONAL { ?conflict wdt:P18 ?image. } OPTIONAL { ?conflict wdt:P373 ?commonsCategory. } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "${currentLang.value}"; schema:isPartOf <https://${currentLang.value}.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". ?conflict rdfs:label ?conflictLabel; schema:description ?description. ?adminEntity rdfs:label ?adminEntityLabel. ?country rdfs:label ?countryLabel. } }`;
+                    const sparqlQuery = `SELECT ?conflict ?conflictLabel ?description ?coords ?startDate ?endDate ?adminEntity ?adminEntityLabel ?wikipediaUrl ?countryLabel ?image ?commonsCategory WHERE { ${countriesFilter} ?conflict wdt:P17 ?country. VALUES ?type { wd:Q5683226 wd:Q183129 wd:Q3193890 wd:Q220187 wd:Q131141356 wd:Q18353204 } ?conflict wdt:P31 ?type. OPTIONAL { ?conflict wdt:P625 ?coords. } OPTIONAL { ?conflict wdt:P580 ?startDate. } OPTIONAL { ?conflict wdt:P582 ?endDate. } OPTIONAL { ?conflict wdt:P131 ?adminEntity. } OPTIONAL { ?conflict wdt:P18 ?image. } OPTIONAL { ?conflict wdt:P373 ?commonsCategory. } OPTIONAL { ?wikipediaUrl schema:about ?conflict; schema:inLanguage "${currentLang.value}"; schema:isPartOf <https://${currentLang.value}.wikipedia.org/>. } SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". ?conflict rdfs:label ?conflictLabel; schema:description ?description. ?adminEntity rdfs:label ?adminEntityLabel. ?country rdfs:label ?countryLabel. } }`;
                     const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
                     try {
                         const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -1305,7 +1309,7 @@
                 };
 
                 const fetchCountries = async () => {
-                     const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q472983 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". } } ORDER BY ?countryLabel`;
+                     const sparqlQuery = `SELECT DISTINCT ?country ?countryLabel WHERE { VALUES ?type { wd:Q5683226 wd:Q183129 wd:Q3193890 wd:Q220187 wd:Q131141356 wd:Q18353204 } ?conflict wdt:P31 ?type; wdt:P17 ?country. SERVICE wikibase:label { bd:serviceParam wikibase:language "${currentLang.value},en,es". } } ORDER BY ?countryLabel`;
                     const url = `https://query.wikidata.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
                     try {
                         const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -1361,11 +1365,25 @@
                     const conflictsWithCoords = newConflicts.filter(c => c.coords);
 
                     conflictsWithCoords.forEach(conflict => {
-                        let markerStyle = `background-color: ${getSectorColor(conflict.sector)}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.6);`;
+                        let size = 12; // 🔹 tamaño más pequeño (antes 20)
+                        let border = 1;
+                        let markerStyle = `
+                        background-color: ${getSectorColor(conflict.sector)};
+                        width: ${size}px;
+                        height: ${size}px;
+                        border-radius: 50%;
+                        border: ${border}px solid white;
+                        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+                        `;
                         if (conflict.isImprecise) {
                             markerStyle += ` border-style: dashed; opacity: 0.8;`;
                         }
-                        const icon = L.divIcon({ className: 'custom-marker', html: `<div style="${markerStyle}"></div>`, iconSize:[24,24], iconAnchor:[12,12] });
+                        const icon = L.divIcon({
+                            className: 'custom-marker',
+                            html: `<div style="${markerStyle}"></div>`,
+                            iconSize: [size + border * 2, size + border * 2],
+                            iconAnchor: [(size + border * 2) / 2, (size + border * 2) / 2]
+                        });
                         
                         L.marker(conflict.coords, { icon: icon })
                             .addTo(markers)
