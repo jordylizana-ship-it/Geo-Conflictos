@@ -7,10 +7,9 @@ Una aplicación web interactiva para visualizar y analizar conflictos socioambie
 
 **Visita la aplicación en vivo:** **[https://geo-conflictos.toolforge.org/](https://geo-conflictos.toolforge.org/)**
 
-
 ---
 
-## # Acerca del Proyecto
+## Acerca del Proyecto
 
 **GeoConflictos** es una aplicación web que permite explorar y analizar los conflictos socioambientales representados en **Wikidata**, ofreciendo una mirada geográfica y estadística sobre su distribución, características y estado actual. El proyecto busca facilitar el acceso a información confiable y abierta sobre tensiones territoriales y ambientales, apoyando a investigadores, periodistas, estudiantes y organizaciones sociales en la comprensión de los conflictos que afectan a distintas comunidades del mundo.
 
@@ -18,7 +17,7 @@ La arquitectura del proyecto, con un backend en **Node.js/Express** sirviendo un
 
 ---
 
-## # Características Principales
+## Características Principales
 
 * 🗺️ **Mapa Interactivo:** Visualización de conflictos con coordenadas en un mapa mundial, potenciado por Leaflet.js.
 * 🔗 **Datos Abiertos y en Vivo:** La información se obtiene en tiempo real a través de consultas SPARQL a Wikidata, asegurando datos siempre actualizados.
@@ -32,7 +31,7 @@ La arquitectura del proyecto, con un backend en **Node.js/Express** sirviendo un
 
 ---
 
-## # Construido Con
+## Construido Con
 
 Este proyecto fue posible gracias a las siguientes tecnologías:
 
@@ -51,7 +50,7 @@ Este proyecto fue posible gracias a las siguientes tecnologías:
 
 ---
 
-## # Uso Local
+## Uso Local
 
 Para ejecutar este proyecto en tu propia máquina, sigue estos pasos:
 
@@ -81,13 +80,13 @@ Para ejecutar este proyecto en tu propia máquina, sigue estos pasos:
 
 ---
 
-## # Licencia
+## Licencia
 
 Distribuido bajo la Licencia MIT. Ver `LICENSE` para más información.
 
 ---
 
-## # Contacto
+## Contacto
 
 Jordy Lizana - [jordylizana-ship-it](https://github.com/jordylizana-ship-it)
 

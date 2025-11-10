@@ -122,9 +122,9 @@
         .load-button:hover { background-color: var(--action-color-dark); transform: translateY(-2px); }
         
         .custom-select-container { position: relative; }
-        .custom-select-display { background-color: var(--input-bg); border: 2px solid transparent; border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+        .custom-select-display { background-color: var(--input-bg); border: 2px solid transparent; border-radius: 0.5rem; padding: 0.5rem; width: 100%; min-height: 48px; max-height: 96px; overflow-y: auto; cursor: pointer; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: flex-start; gap: 0.35rem; }
         .custom-select-display.open { border-color: var(--action-color); }
-        .country-tag { background-color: var(--action-color-light); color: var(--action-color); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
+        .country-tag { background-color: var(--action-color-light); color: var(--action-color); padding: 0.25rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; margin: 2px;}
         .country-tag .remove-tag { cursor: pointer; font-weight: bold; }
         .placeholder-text { color: var(--text-secondary); padding-left: 0.3rem; }
         .country-dropdown { position: absolute; top: 105%; left: 0; width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1002; padding: 0.5rem; }
